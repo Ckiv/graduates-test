@@ -1,4 +1,21 @@
-var mysql = require("mysql");
+// подключение express
+const express = require("express");
+
+const app = express();
+
+app.use(express.static(__dirname + "/public"));
+
+app.use("/", function(request, response){
+
+    response.send("<h1>Главная страница</h1>");
+});
+
+app.listen(3000);
+
+
+
+
+/*var mysql = require("mysql");
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -11,16 +28,16 @@ var connection = mysql.createConnection({
 var express = require('express');
 var app = express();
 
-app.get('/', function (req, res) {
-    res.send('This is home');
+app.get('/graduates/html/index.html', function (req, res) {
+    res.sendFile(__dirname + "/html/index.html");
+
+});
+app.get('/graduates/html/lol', function (req, res) {
+    res.send('lol');
 
 });
 app.listen(63342);
-
-
-
-
-
+*/
 
 /*
 connection.connect(function(err) {
