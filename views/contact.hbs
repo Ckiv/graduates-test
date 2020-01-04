@@ -5,17 +5,12 @@
     <meta charset="utf-8" />
 </head>
 <body>
+{{> menu}}
 
 <h1>{{title}}</h1>
-
-{{#if emailsVisible}}
-    <h3>Электронные адреса</h3>
-    <ul>
-        {{#each emails}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
-{{/if}}
+<p>Электронный адрес: {{email}}</p>
 <p>Телефон: {{phone}}</p>
+
+{{> footer}}
 </body>
-</html>
+<html>
