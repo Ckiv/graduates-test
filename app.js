@@ -1,7 +1,16 @@
 const express = require("express");
+const expressHbs = require("express-handlebars");
 const hbs = require("hbs");
 const app = express();
 
+// устанавливаем настройки для файлов layout
+app.engine("hbs", expressHbs(
+    {
+        layoutsDir: "views/layouts",
+        defaultLayout: "layout",
+        extname: "hbs"
+    }
+))
 app.set("view engine", "hbs");
 hbs.registerPartials(__dirname + "/views/partials");
 
