@@ -1,4 +1,116 @@
+const mysql = require("mysql2");
 const express = require("express");
+const bodyParser = require("body-parser");
+
+const app = express();
+const urlencodedParser = bodyParser.urlencoded({extended: false});
+
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'db_graduates',
+    port: 3306
+});
+
+app.set("view engine", "hbs");
+
+// получение списка пользователей
+app.get("/", function(req, res){
+    pool.query("SELECT * FROM graduate", function(err, data) {
+        if(err) return console.log(err);
+        res.render("index.hbs", {
+            graduate: data
+        });
+    });
+});
+// возвращаем форму для добавления данных
+app.get("/create", function(req, res){
+    res.render("create.hbs");
+});
+// получаем отправленные данные и добавляем их в БД
+app.post("/create", urlencodedParser, function (req, res) {
+
+    if(!req.body) return res.sendStatus(400);
+    const name = req.body.name;
+    const age = req.body.age;
+    pool.query("INSERT INTO users (name, age) VALUES (?,?)", [name, age], function(err, data) {
+        if(err) return console.log(err);
+        res.redirect("/");
+    });
+});
+
+// получем id редактируемого пользователя, получаем его из бд и отправлям с формой редактирования
+app.get("/edit/:id", function(req, res){
+    const id = req.params.id;
+    pool.query("SELECT * FROM users WHERE id=?", [id], function(err, data) {
+        if(err) return console.log(err);
+        res.render("edit.hbs", {
+            user: data[0]
+        });
+    });
+});
+// получаем отредактированные данные и отправляем их в БД
+app.post("/edit", urlencodedParser, function (req, res) {
+
+    if(!req.body) return res.sendStatus(400);
+    const name = req.body.name;
+    const age = req.body.age;
+    const id = req.body.id;
+
+    pool.query("UPDATE users SET name=?, age=? WHERE id=?", [name, age, id], function(err, data) {
+        if(err) return console.log(err);
+        res.redirect("/");
+    });
+});
+
+// получаем id удаляемого пользователя и удаляем его из бд
+app.post("/delete/:id", function(req, res){
+
+    const id = req.params.id;
+    pool.query("DELETE FROM users WHERE id=?", [id], function(err, data) {
+        if(err) return console.log(err);
+        res.redirect("/");
+    });
+});
+
+app.listen(3000, function(){
+    console.log("Сервер ожидает подключения...");
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*const express = require("express");
 const expressHbs = require("express-handlebars");
 const hbs = require("hbs");
 const app = express();
@@ -29,110 +141,15 @@ app.use("/", function(request, response){
     response.render("home.hbs");
 });
 app.listen(3000);
-
-
-
-
-
-
-
-
-
-/*const express = require("express");
-const app = express();
-var mysql = require("mysql");
-
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'db_graduates',
-    port: 3306
-});
-
-// обработка запроса по адресу /about
-app.get("/about", function(request, response){
-
-    response.send("<h1>О сайте</h1>");
-});
-
-// обработка запроса по адресу /contact
-app.use("/contact", function(request, response){
-
-    response.send("<h1>Контакты</h1>");
-});
-//включение статических файлов
-app.use(express.static(__dirname + '/public'));
-
-// обработка запроса к корню веб-сайта
-app.use("/", function(request, response){
-
-    response.sendFile(__dirname + "/public/index.html");
-});
-app.listen(3000);
-
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log("Подключение к серверу MySQL успешно установлено");
-});
-
-const sql = `SELECT * FROM graduate`;
-
-connection.query(sql, function(err, results) {
-    if(err) console.log(err);
-    console.log(results);
-});
-
-connection.end(function(err) {
-    if (err) {
-        return console.log("Ошибка: " + err.message);
-    }
-    console.log("Подключение закрыто");
-});
-
 */
 
-/*
-var express = require('express');
-var app = express();
 
-app.get('/graduates/html/index.html', function (req, res) {
-    res.sendFile(__dirname + "/html/index.html");
 
-});
-app.get('/graduates/html/lol', function (req, res) {
-    res.send('lol');
 
-});
-app.listen(63342);
-*/
 
-/*
-var mysql = require("mysql");
 
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'db_graduates',
-    port: 3306
-});
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log("Подключение к серверу MySQL успешно установлено");
-});
 
-const sql = `SELECT * FROM graduate`;
 
-connection.query(sql, function(err, results) {
-    if(err) console.log(err);
-    console.log(results);
-});
 
-connection.end(function(err) {
-    if (err) {
-        return console.log("Ошибка: " + err.message);
-    }
-    console.log("Подключение закрыто");
-});
-*/
+
+
