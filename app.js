@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({extended: false});
+app.use('/static', express.static(__dirname + '/public'));
 
 const pool = mysql.createPool({
     host: 'localhost',
@@ -77,30 +78,6 @@ app.post("/delete/:id", function(req, res){
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

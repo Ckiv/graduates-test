@@ -2,37 +2,3 @@ body {
   margin: 0;
   padding: 0;
 }
-.grid {
-  display: grid;
-  grid-template-areas:
-    "header header"
-    "seachleft article"
-    "footer footer";
-  grid-template-rows: 200px 1fr 60px;
-  grid-template-columns: 20% 1fr;
-  grid-gap: 0px;
-  height: 100vh;
-  margin: 0;
-}
-#header {
-  grid-area: header;
-  border-bottom: 2px solid;
-}
-#seachleft {
-  grid-area: seachleft;
-  border-right: 2px solid;;
-}
-#article {
-  grid-area: article;
-}
-
-#footer {
-  grid-area: footer;
-  border-top: 2px solid;
-}
-
-.flex-conteiner{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}

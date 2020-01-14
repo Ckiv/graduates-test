@@ -3,11 +3,76 @@
 <head>
     <title>Список пользователей</title>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="../public/css/style.css">
 </head>
 <body>
-<h1>Список пользователей</h1>
-<p><a href="/create">Добавить пользователя</a></p>
-<table>
+<header>
+    <p>Полоцкий государственный университет</p>
+</header>
+<div class="content">
+    <h1>ВЫПУСКНИКИ НПИ-ПГУ</h1>
+    <form action="#" class="fio_seach" method="get">
+        <input type="text" name="fio">
+        <input type="submit" value="Найти">
+    </form>
+    <div class="result_seach">
+        <ul class="find_graduates">
+
+        </ul>
+    </div>
+    <form action="#" class="seach" method="get">
+        <form action="#" name="seach" method="get">
+            <div class="flex-conteiner">
+                <label>Факультет</label>
+                <select name="faculty">
+                    <option disabled selected>Выбрать факультет</option>
+                    <option>Вечерний факультет</option>
+                    <option>Геодезический факультет</option>
+                    <option>Гуманитарный факультет</option>
+                    <option>Дневной факультет</option>
+                    <option>Заочный факультет</option>
+                    <option>Инженерно-строительный факультет</option>
+                    <option>Инженерно-технологический факультет</option>
+                    <option>Инженерно-экологический факультет</option>
+                    <option>Историко-правоведческий факультет</option>
+                    <option>Историко-филологический факультет</option>
+                    <option>Машиностроительный факультет</option>
+                    <option>Механико-строительный факультет</option>
+                    <option>Механико-технологический факультет</option>
+                    <option>Радиотехнический факультет</option>
+                    <option>Санитарно-технический факультет</option>
+                    <option>Спортивно-педагогический факультет</option>
+                    <option>Строительный факультет</option>
+                    <option>Технологический факультет</option>
+                    <option>Факультет иностранных языков</option>
+                    <option>Факультет информационных технологий</option>
+                    <option>Факультет машиностроения и автомобильного транспорта</option>
+                    <option>Факультет педагогического воспитания и физической культуры</option>
+                    <option>Факультет экономики и права</option>
+                    <option>Финансово-экономический факультет</option>
+                    <option>Юридический факультет</option>
+                </select>
+                <label>Специальность</label><input type="text" name="specialty">
+                <label>Группа</label><input type="text" name="group">
+                <label>Форма обучения</label>
+                <select name="training">
+                    <option disabled selected>Выбрать форму обучения</option>
+                    <option>Дневная</option>
+                    <option>Дневная сокращенная</option>
+                    <option>Заочная</option>
+                    <option>Заочная сокращенная</option>
+                    <option>Дистанционная</option>
+                    <option>Вечерняя</option>
+                </select>
+                <label>Год выпуска</label><input type="text" name="year">
+                <label>Фамилия</label><input type="text" name="lastname">
+                <label>Имя</label><input type="text" name="name">
+                <label>Отчество</label><input type="text" name="patronymic">
+            </div>
+            <p><input type="submit" value="Найти"></p>
+        </form>
+    </form>
+<!-- пример вывода из бд
     <tr><th>Name</th><th>Age</th><th></th></tr>
     {{#each graduate}}
         <tr>
@@ -22,6 +87,10 @@
             </td>
         </tr>
     {{/each}}
-</table>
+-->
+</div>
+<footer>
+    <p>PSU - Copyright @ 2020</p>
+</footer>
 </body>
 <html>
