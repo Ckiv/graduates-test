@@ -1,4 +1,137 @@
-body {
-  margin: 0;
+/*сброс стилей браузера начало*/
+/* Указываем box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Убираем внутренние отступы */
+ul[class],
+ol[class] {
   padding: 0;
 }
+
+/* Убираем внешние отступы */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Выставляем основные настройки по-умолчанию для body */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* Удаляем стандартную стилизацию для всех ul и il, у которых есть атрибут class*/
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+/* Элементы a, у которых нет класса, сбрасываем до дефолтных стилей */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Упрощаем работу с изображениями */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Указываем понятную периодичность в потоке данных у article*/
+article > * + * {
+  margin-top: 1em;
+}
+
+/* Наследуем шрифты для инпутов и кнопок */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Удаляем все анимации и переходы для людей, которые предпочитай их не использовать */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/*сброс стилей браузера конец*/
+h1 {
+  color: red;
+}
+header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 200px;
+  border-bottom: 1px solid #000;
+
+}
+.header_name{
+  font-size: 24px;
+}
+.main_page_h1 {
+  text-align: center;
+}
+.content_main_page {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #000;
+}
+/* стили левого блока главной страницы старт*/
+.main_page_left_block {
+  display: flex;
+  width: 75%;
+  flex-direction: column;
+  margin: 0px 35px 0 100px;
+  border-right: 1px solid #000;
+}
+.fio_seach{
+  display: flex;
+  justify-content: center;
+}
+.result_seach{
+  display: flex;
+  justify-content: start;
+
+}
+.fild_fio_seach {
+  width: 70%;
+  height: 40px;
+}
+/* стили левого блока главной страницы конец*/
+/* стили правоого блока главной страницы старт*/
+.main_page_right_block {
+  width: 25%;
+  margin-right: 100px;
+}
+.properties_seach {
+  display: flex;
+  flex-direction: column;
+}
+.properties_seach_input {
+  margin-bottom: 10px;
+}
+/* стили правого блока главной страницы конец*/

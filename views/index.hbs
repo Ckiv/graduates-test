@@ -1,77 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Список пользователей</title>
+    <title>Выпускники НПИ-ПГУ</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <header>
-    <p>Полоцкий государственный университет</p>
+    <p class="header_name">Полоцкий государственный университет</p>
 </header>
-<div class="content">
-    <h1>ВЫПУСКНИКИ НПИ-ПГУ</h1>
-    <form action="#" class="fio_seach" method="get">
-        <input type="text" name="fio">
-        <input type="submit" value="Найти">
-    </form>
-    <div class="result_seach">
-        <ul class="find_graduates">
+<h1 class="main_page_h1">ВЫПУСКНИКИ НПИ-ПГУ</h1>
+<div class="content_main_page">
+    <div class="main_page_left_block">
 
-        </ul>
-    </div>
-    <form action="#" class="seach" method="get">
-        <form action="#" name="seach" method="get">
-            <div class="flex-conteiner">
-                <label>Факультет</label>
-                <select name="faculty">
-                    <option disabled selected>Выбрать факультет</option>
-                    <option>Вечерний факультет</option>
-                    <option>Геодезический факультет</option>
-                    <option>Гуманитарный факультет</option>
-                    <option>Дневной факультет</option>
-                    <option>Заочный факультет</option>
-                    <option>Инженерно-строительный факультет</option>
-                    <option>Инженерно-технологический факультет</option>
-                    <option>Инженерно-экологический факультет</option>
-                    <option>Историко-правоведческий факультет</option>
-                    <option>Историко-филологический факультет</option>
-                    <option>Машиностроительный факультет</option>
-                    <option>Механико-строительный факультет</option>
-                    <option>Механико-технологический факультет</option>
-                    <option>Радиотехнический факультет</option>
-                    <option>Санитарно-технический факультет</option>
-                    <option>Спортивно-педагогический факультет</option>
-                    <option>Строительный факультет</option>
-                    <option>Технологический факультет</option>
-                    <option>Факультет иностранных языков</option>
-                    <option>Факультет информационных технологий</option>
-                    <option>Факультет машиностроения и автомобильного транспорта</option>
-                    <option>Факультет педагогического воспитания и физической культуры</option>
-                    <option>Факультет экономики и права</option>
-                    <option>Финансово-экономический факультет</option>
-                    <option>Юридический факультет</option>
-                </select>
-                <label>Специальность</label><input type="text" name="specialty">
-                <label>Группа</label><input type="text" name="group">
-                <label>Форма обучения</label>
-                <select name="training">
-                    <option disabled selected>Выбрать форму обучения</option>
-                    <option>Дневная</option>
-                    <option>Дневная сокращенная</option>
-                    <option>Заочная</option>
-                    <option>Заочная сокращенная</option>
-                    <option>Дистанционная</option>
-                    <option>Вечерняя</option>
-                </select>
-                <label>Год выпуска</label><input type="text" name="year">
-                <label>Фамилия</label><input type="text" name="lastname">
-                <label>Имя</label><input type="text" name="name">
-                <label>Отчество</label><input type="text" name="patronymic">
-            </div>
-            <p><input type="submit" value="Найти"></p>
+        <form action="#" class="fio_seach" method="get">
+            <input type="text" class="fild_fio_seach" name="fio" placeholder="Фамилия Имя Отчество">
+            <input type="submit" value="Найти">
         </form>
-    </form>
+        <div class="result_seach">
+            <ul class="find_graduates">
+                <li>Тестовый выпускник 1</li>
+                <li>Тестовый выпускник 2</li>
+                <li>Тестовый выпускник 3</li>
+                <li>Тестовый выпускник 4</li>
+                <li>Тестовый выпускник 5</li>
+            </ul>
+        </div>
+    </div>
+    <div class="main_page_right_block">
+        <form action="#" class="seach" method="get">
+                <div class="properties_seach">
+                    <label>Факультет</label>
+                    <select name="faculty" class="properties_seach_input">
+                        <option disabled selected>Выбрать факультет</option>
+                        <option>Вечерний факультет</option>
+                        <option>Геодезический факультет</option>
+                        <option>Гуманитарный факультет</option>
+                        <option>Дневной факультет</option>
+                        <option>Заочный факультет</option>
+                        <option>Инженерно-строительный факультет</option>
+                        <option>Инженерно-технологический факультет</option>
+                        <option>Инженерно-экологический факультет</option>
+                        <option>Историко-правоведческий факультет</option>
+                        <option>Историко-филологический факультет</option>
+                        <option>Машиностроительный факультет</option>
+                        <option>Механико-строительный факультет</option>
+                        <option>Механико-технологический факультет</option>
+                        <option>Радиотехнический факультет</option>
+                        <option>Санитарно-технический факультет</option>
+                        <option>Спортивно-педагогический факультет</option>
+                        <option>Строительный факультет</option>
+                        <option>Технологический факультет</option>
+                        <option>Факультет иностранных языков</option>
+                        <option>Факультет информационных технологий</option>
+                        <option>Факультет машиностроения и автомобильного транспорта</option>
+                        <option>Факультет педагогического воспитания и физической культуры</option>
+                        <option>Факультет экономики и права</option>
+                        <option>Финансово-экономический факультет</option>
+                        <option>Юридический факультет</option>
+                    </select>
+                    <label>Специальность</label>
+                    <input type="text" name="specialty" class="properties_seach_input">
+                    <label>Группа</label>
+                    <input type="text" name="group" class="properties_seach_input">
+                    <label>Форма обучения</label>
+                    <select name="training" class="properties_seach_input">
+                        <option disabled selected>Выбрать форму обучения</option>
+                        <option>Дневная</option>
+                        <option>Дневная сокращенная</option>
+                        <option>Заочная</option>
+                        <option>Заочная сокращенная</option>
+                        <option>Дистанционная</option>
+                        <option>Вечерняя</option>
+                    </select>
+                    <label>Год выпуска</label>
+                    <input type="text" name="year" class="properties_seach_input">
+                </div>
+                <p><input type="submit" value="Найти"></p>
+        </form>
+    </div>
 <!-- пример вывода из бд
     <tr><th>Name</th><th>Age</th><th></th></tr>
     {{#each graduate}}

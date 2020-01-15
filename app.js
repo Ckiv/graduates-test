@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({extended: false});
-app.use('/static', express.static(__dirname + '/public'));
+
 
 const pool = mysql.createPool({
     host: 'localhost',
@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 });
 
 app.set("view engine", "hbs");
-
+app.use(express.static('public'));
 // получение списка пользователей
 app.get("/", function(req, res){
     pool.query("SELECT * FROM graduate", function(err, data) {
