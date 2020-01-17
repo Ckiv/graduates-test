@@ -18,7 +18,7 @@ app.set("view engine", "hbs");
 app.use(express.static('public'));
 // получение списка пользователей
 app.get("/", function(req, res){
-    pool.query("SELECT * FROM graduate", function(err, data) {
+    pool.query("SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id", function(err, data) {
         if(err) return console.log(err);
         res.render("index.hbs", {
             graduate: data

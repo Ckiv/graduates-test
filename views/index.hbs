@@ -19,11 +19,9 @@
         </form>
         <div class="result_seach">
             <ul class="find_graduates">
-                <li>Тестовый выпускник 1</li>
-                <li>Тестовый выпускник 2</li>
-                <li>Тестовый выпускник 3</li>
-                <li>Тестовый выпускник 4</li>
-                <li>Тестовый выпускник 5</li>
+                {{#each graduate}}
+                    <li>{{this.lastname}} {{this.name}} {{this.patronymic}} Факультет: {{this.title_faculty}} Группа: {{this.group}} Год выпуска: {{this.year}}</li>
+                {{/each}}
             </ul>
         </div>
     </div>
@@ -79,22 +77,7 @@
                 <p><input type="submit" value="Найти"></p>
         </form>
     </div>
-<!-- пример вывода из бд
-    <tr><th>Name</th><th>Age</th><th></th></tr>
-    {{#each graduate}}
-        <tr>
-            <td>{{this.name}}</td>
-            <td>{{this.group}}</td>
-            <td>{{this.id-faculty}}</td>
-            <td>
-                <a href="/edit/{{this.id}}">Edit</a>|
-                <form action="delete/{{this.id}}" method="POST" style="display:inline;">
-                    <input type="submit" value="Delete" />
-                </form>
-            </td>
-        </tr>
-    {{/each}}
--->
+
 </div>
 <footer>
     <p>PSU - Copyright @ 2020</p>
