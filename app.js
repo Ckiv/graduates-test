@@ -1,9 +1,10 @@
 const mysql = require("mysql2");
 const express = require("express");
 const bodyParser = require("body-parser");
-
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({extended: false});
+
+
 
 
 const pool = mysql.createPool({
@@ -16,7 +17,22 @@ const pool = mysql.createPool({
 
 app.set("view engine", "hbs");
 app.use(express.static('public'));
-// получение списка пользователей
+
+// запись в БД из Excel
+var parseXlsx = require('excel').default;
+parseXlsx('public/grad.xlsx').then((data) => {
+
+    for (var i=0; i<=data[0].length; i++){
+        pool.query("INSERT INTO training (type_training) VALUES (?)", [data[i][1]], function(err, data) {
+            if(err) return console.log(err);
+        });
+
+        console.log(data)
+    }
+});
+
+
+// получение списка выпускников
 app.get("/", function(req, res){
     pool.query("SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id", function(err, data) {
         if(err) return console.log(err);
@@ -25,11 +41,10 @@ app.get("/", function(req, res){
         });
     });
 });
-// возвращаем форму для добавления данных
-app.get("/create", function(req, res){
-    res.render("create.hbs");
-});
-// получаем отправленные данные и добавляем их в БД
+
+
+/*
+// заполняем БД
 app.post("/create", urlencodedParser, function (req, res) {
 
     if(!req.body) return res.sendStatus(400);
@@ -41,6 +56,10 @@ app.post("/create", urlencodedParser, function (req, res) {
     });
 });
 
+ возвращаем форму для добавления данных
+app.get("/create", function(req, res){
+    res.render("create.hbs");
+});
 // получем id редактируемого пользователя, получаем его из бд и отправлям с формой редактирования
 app.get("/edit/:id", function(req, res){
     const id = req.params.id;
@@ -74,7 +93,7 @@ app.post("/delete/:id", function(req, res){
         res.redirect("/");
     });
 });
-
+*/
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
 });
