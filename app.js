@@ -1,4 +1,4 @@
-const mysql = require("mysql2/promise");
+const mysql = require("mysql2"); //const mysql = require("mysql2/promise");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -22,13 +22,9 @@ var parser = new (require('simple-excel-to-json').XlsParser)();
 var doc = parser.parseXls2Json('./public/grad-db.xlsx');
 //print the data of the first sheet
 var data = doc[0];
-let i=0;
-while (i<=data.length){
-    console.log("ид диплома: " + i + " номер диплома: " + data[i].diploma);
-    i++;
-}
 
 /*
+
 // запись в БД
 async function setDataGraduate() {
 
@@ -42,7 +38,7 @@ async function setDataGraduate() {
     let idUser=2;
     let idTraining;
 
-    for (let i=0; i<=1000; i++){
+    for (let i=0; i<=235; i++){
         //написать условия для определения id для записи
         for (let tempSpec=0; tempSpec<specialty[0].length; tempSpec++){
             if (data[i].specialty === specialty[0][tempSpec].title_specialty){
@@ -78,18 +74,55 @@ async function setDataGraduate() {
 setDataGraduate();
 */
 
-
-
-// получение списка выпускников
 app.get("/", function(req, res){
-    pool.query("SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id", function(err, data) {
+    res.render("index.hbs");
+});
+
+// поиск выпускников
+app.post("/index", urlencodedParser, function(req, res){
+    if (!req.body) return res.sendStatus(400);
+    if (req.body.specialtyForm==='' || req.body.groupForm==='' || req.body.trainingForm==='' || req.body.yearForm===''){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=?";
+        pool.query(sql, [req.body.facultyForm], function(err, data) {
+            if(err) return console.log(err);
+            res.render("index.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if (req.body.facultyForm==='' || req.body.groupForm==='' || req.body.trainingForm==='' || req.body.yearForm===''){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  specialty.title_specialty=?";
+        pool.query(sql, [req.body.specialtyForm], function(err, data) {
+            if(err) return console.log(err);
+            res.render("index.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else {
+       let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and specialty.title_specialty=? and graduate.groupp=? and training.type_training=? and graduate.year=?";
+       pool.query(sql, [req.body.facultyForm, req.body.specialtyForm, req.body.groupForm, req.body.trainingForm, req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            res.render("index.hbs", {
+                graduate: data
+            });
+        });
+    }
+    //console.log(req.body.trainingForm);
+    //res.render("index.hbs");
+});
+/* app.post("/index", urlencodedParser, function(req, res){
+    if (!req.body) return res.sendStatus(400);
+    pool.query("SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and faculty.title_faculty='Гуманитарный факультет'", function(err, data) {
         if(err) return console.log(err);
         res.render("index.hbs", {
             graduate: data
         });
     });
-});
 
+    console.log(req.body);
+    //res.render("index.hbs");
+});*/
 
 /*
 // заполняем БД

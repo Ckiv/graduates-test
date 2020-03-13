@@ -20,16 +20,16 @@
         <div class="result_seach">
             <ul class="find_graduates">
                 {{#each graduate}}
-                    <li>{{this.lastname}} {{this.name}} {{this.patronymic}} Факультет: {{this.title_faculty}} Группа: {{this.groupp}} Год выпуска: {{this.year}}</li>
+                    <li>Фамилия: {{this.lastname}}<br> Имя: {{this.name}}<br> Отчество: {{this.patronymic}}<br> Факультет: {{this.title_faculty}} <br> Специальность: {{this.title_specialty}}<br> Форма обучения: {{this.type_training}}<br> Группа: {{this.groupp}}<br> Год выпуска: {{this.year}}<br> Номер диплома: {{this.diploma}}</li>
                 {{/each}}
             </ul>
         </div>
     </div>
     <div class="main_page_right_block">
-        <form action="#" class="seach" method="get">
+        <form action="/index" class="seach" method="post">
                 <div class="properties_seach">
                     <label>Факультет</label>
-                    <select name="faculty" class="properties_seach_input">
+                    <select name="facultyForm" class="properties_seach_input">
                         <option disabled selected>Выбрать факультет</option>
                         <option>Вечерний факультет</option>
                         <option>Геодезический факультет</option>
@@ -58,21 +58,21 @@
                         <option>Юридический факультет</option>
                     </select>
                     <label>Специальность</label>
-                    <input type="text" name="specialty" class="properties_seach_input">
+                    <input type="text" name="specialtyForm" class="properties_seach_input">
                     <label>Группа</label>
-                    <input type="text" name="group" class="properties_seach_input">
+                    <input type="text" name="groupForm" class="properties_seach_input">
                     <label>Форма обучения</label>
-                    <select name="training" class="properties_seach_input">
+                    <select name="trainingForm" class="properties_seach_input">
                         <option disabled selected>Выбрать форму обучения</option>
-                        <option>Дневная</option>
-                        <option>Дневная сокращенная</option>
-                        <option>Заочная</option>
-                        <option>Заочная сокращенная</option>
-                        <option>Дистанционная</option>
-                        <option>Вечерняя</option>
+                        <option>дневная</option>
+                        <option>дневная сокращенная</option>
+                        <option>заочная</option>
+                        <option>заочная сокращенная</option>
+                        <option>дистанционная</option>
+                        <option>вечерняя</option>
                     </select>
                     <label>Год выпуска</label>
-                    <input type="text" name="year" class="properties_seach_input">
+                    <input type="text" name="yearForm" class="properties_seach_input">
                 </div>
                 <p><input type="submit" value="Найти"></p>
         </form>
