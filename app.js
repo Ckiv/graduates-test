@@ -81,7 +81,7 @@ app.get("/", function(req, res){
 // поиск выпускников
 app.post("/index", urlencodedParser, function(req, res){
     if (!req.body) return res.sendStatus(400);
-    if (req.body.specialtyForm==='' || req.body.groupForm==='' || req.body.trainingForm==='' || req.body.yearForm===''){
+    if (req.body.facultyForm!==undefined && (req.body.specialtyForm==='' || req.body.groupForm==='' || req.body.trainingForm===undefined || req.body.yearForm==='')){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=?";
         pool.query(sql, [req.body.facultyForm], function(err, data) {
             if(err) return console.log(err);
@@ -90,7 +90,7 @@ app.post("/index", urlencodedParser, function(req, res){
             });
         });
     }
-    else if (req.body.facultyForm==='' || req.body.groupForm==='' || req.body.trainingForm==='' || req.body.yearForm===''){
+    else if (req.body.specialtyForm!=='' && (req.body.facultyForm===undefined || req.body.groupForm==='' || req.body.trainingForm===undefined || req.body.yearForm==='')){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  specialty.title_specialty=?";
         pool.query(sql, [req.body.specialtyForm], function(err, data) {
             if(err) return console.log(err);
@@ -99,18 +99,52 @@ app.post("/index", urlencodedParser, function(req, res){
             });
         });
     }
-    else {
-       let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and specialty.title_specialty=? and graduate.groupp=? and training.type_training=? and graduate.year=?";
-       pool.query(sql, [req.body.facultyForm, req.body.specialtyForm, req.body.groupForm, req.body.trainingForm, req.body.yearForm], function(err, data) {
+    else if (req.body.groupForm!=='' && (req.body.facultyForm===undefined || req.body.specialtyForm==='' || req.body.trainingForm===undefined || req.body.yearForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  graduate.groupp=?";
+        pool.query(sql, [req.body.groupForm], function(err, data) {
             if(err) return console.log(err);
             res.render("index.hbs", {
                 graduate: data
             });
         });
     }
-    //console.log(req.body.trainingForm);
+    else if (req.body.trainingForm!==undefined && (req.body.facultyForm===undefined || req.body.specialtyForm==='' || req.body.groupForm==='' || req.body.yearForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  training.type_training=?";
+        pool.query(sql, [req.body.trainingForm], function(err, data) {
+            if(err) return console.log(err);
+            res.render("index.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if (req.body.yearForm!=='' && (req.body.facultyForm===undefined || req.body.specialtyForm==='' || req.body.groupForm==='' || req.body.trainingForm===undefined)){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  graduate.year=?";
+        pool.query(sql, [req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            res.render("index.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else {
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and specialty.title_specialty=? and graduate.groupp=? and training.type_training=? and graduate.year=?";
+        pool.query(sql, [req.body.facultyForm, req.body.specialtyForm, req.body.groupForm, req.body.trainingForm, req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            res.render("index.hbs", {
+                graduate: data
+            });
+        });
+    }
+
+    console.log("факультет из формы: " + req.body.facultyForm);
+    console.log("специальность из формы: " + req.body.specialtyForm);
+    console.log("группа из формы: " + req.body.groupForm);
+    console.log("форма обучения из формы: " + req.body.trainingForm);
+    console.log("год из формы: " + req.body.yearForm);
     //res.render("index.hbs");
 });
+
+//graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id
 /* app.post("/index", urlencodedParser, function(req, res){
     if (!req.body) return res.sendStatus(400);
     pool.query("SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and faculty.title_faculty='Гуманитарный факультет'", function(err, data) {
