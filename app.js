@@ -78,10 +78,30 @@ app.get("/", function(req, res){
     res.render("index.hbs");
 });
 
-// поиск выпускников
+// поиск выпускников фио
 app.post("/index", urlencodedParser, function(req, res){
     if (!req.body) return res.sendStatus(400);
-    if (req.body.facultyForm!==undefined && (req.body.specialtyForm==='' || req.body.groupForm==='' || req.body.trainingForm===undefined || req.body.yearForm==='')){
+    if (req.body.fio!==''){
+        let fio;
+        fio = req.body.fio.split(' ');
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.lastname=? and graduate.name=? and graduate.patronymic=?";
+        pool.query(sql, [fio[0], fio[1], fio[2]], function(err, data) {
+            if(err) return console.log(err);
+            res.render("index.hbs", {
+                graduate: data
+            });
+            console.log(data);
+        });
+        console.log("фио из формы: " + req.body.fio);
+    }
+
+    //res.render("index.hbs");
+});
+
+app.post("/formseach", urlencodedParser, function(req, res){
+    if (!req.body) return res.sendStatus(400);
+    /* поиск оп форме справа */
+    if (req.body.facultyForm!==undefined || (req.body.specialtyForm==='' && req.body.groupForm==='' && req.body.trainingForm===undefined && req.body.yearForm==='')){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=?";
         pool.query(sql, [req.body.facultyForm], function(err, data) {
             if(err) return console.log(err);
@@ -141,6 +161,8 @@ app.post("/index", urlencodedParser, function(req, res){
     console.log("группа из формы: " + req.body.groupForm);
     console.log("форма обучения из формы: " + req.body.trainingForm);
     console.log("год из формы: " + req.body.yearForm);
+
+
     //res.render("index.hbs");
 });
 
