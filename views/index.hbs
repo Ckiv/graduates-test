@@ -8,19 +8,25 @@
 <body>
 <header>
     <p class="header_name">Полоцкий государственный университет</p>
+    <div class="aut">
+        <a href="login">Войти</a><br>
+        <a href="logout">Выйти</a><br>
+        <a href="profileedit">Редактировать профиль</a>
+    </div>
 </header>
 <h1 class="main_page_h1">ВЫПУСКНИКИ НПИ-ПГУ</h1>
 <div class="content_main_page">
     <div class="main_page_left_block">
 
         <form action="/index" class="fio_seach" method="post">
-            <input type="text" class="fild_fio_seach" name="fio" placeholder="Фамилия Имя Отчество">
+            <input type="text" class="fild_lastname_seach" name="fild_lastname_seach" placeholder="Фамилия">
+            <input type="text" class="fild_name_seach" name="fild_name_seach" placeholder="Имя">
             <input type="submit" value="Найти">
         </form>
         <div class="result_seach">
             <ul class="find_graduates">
                 {{#each graduate}}
-                    <li>Фамилия: {{this.lastname}}<br> Имя: {{this.name}}<br> Отчество: {{this.patronymic}}<br> Факультет: {{this.title_faculty}} <br> Специальность: {{this.title_specialty}}<br> Форма обучения: {{this.type_training}}<br> Группа: {{this.groupp}}<br> Год выпуска: {{this.year}}<br> Номер диплома: {{this.diploma}}</li>
+                    <li><a href="profile?id={{this.id_grad}}">  {{this.lastname}} {{this.name}} {{this.patronymic}}</a><br> Факультет: {{this.title_faculty}} <br> Специальность: {{this.title_specialty}}<br>Группа: {{this.groupp}}<br> Год выпуска: {{this.year}}</li>
                 {{/each}}
             </ul>
         </div>
@@ -57,10 +63,6 @@
                         <option>Финансово-экономический факультет</option>
                         <option>Юридический факультет</option>
                     </select>
-                    <label>Специальность</label>
-                    <input type="text" name="specialtyForm" class="properties_seach_input">
-                    <label>Группа</label>
-                    <input type="text" name="groupForm" class="properties_seach_input">
                     <label>Форма обучения</label>
                     <select name="trainingForm" class="properties_seach_input">
                         <option disabled selected>Выбрать форму обучения</option>
@@ -72,7 +74,60 @@
                         <option>вечерняя</option>
                     </select>
                     <label>Год выпуска</label>
-                    <input type="text" name="yearForm" class="properties_seach_input">
+                    <input type="number" min="2011" max="2018" name="yearForm" class="properties_seach_input">
+                    <label>Специальность</label>
+                    <select name="specialtyForm" class="properties_seach_input">
+                        <option disabled selected>Выбрать специальность</option>
+                        <option>Автомобильные дороги</option>
+                        <option>Автосервис</option>
+                        <option>Английский язык. Немецкий язык</option>
+                        <option>Английский язык. Французский язык</option>
+                        <option>Архитектура</option>
+                        <option>Белорусский язык и литература. Иностранный язык (английский)</option>
+                        <option>Бухгалтерский учёт, анализ и аудит</option>
+                        <option>Бухгалтерский учёт, анализ и аудит (сокращенная форма)</option>
+                        <option>Водоснабжение, водоотведение и охрана водных ресурсов</option>
+                        <option>Вычислительные машины, системы и сети</option>
+                        <option>Дизайн (предметно-пространственной среды)</option>
+                        <option>Дошкольное образование</option>
+                        <option>Дошкольное образование. Английский язык</option>
+                        <option>Иностранный язык (английский). Белорусский язык и литература</option>
+                        <option>История (отечественная и всеобщая)</option>
+                        <option>Компьютерная безопасность</option>
+                        <option>Логистика</option>
+                        <option>Машины и аппараты химических производств и предприятий строительных материалов</option>
+                        <option>Менеджмент</option>
+                        <option>Моделирование и компьютерное проектирование радиоэлектронных средств</option>
+                        <option>Оборудование и технология сварочного производства</option>
+                        <option>Правоведение</option>
+                        <option>Практическая психология</option>
+                        <option>Практическая психология. Английский язык</option>
+                        <option>Программное обеспечение информационных технологий</option>
+                        <option>Проектирование, сооружение и эксплуатация газонефтесооружений и газонефтехранилищ</option>
+                        <option>Промышленная электроника</option>
+                        <option>Промышленное и гражданское строительство</option>
+                        <option>Радиотехника</option>
+                        <option>Романо-германская филология (английский, немецкий языки)</option>
+                        <option>Романо-германская филология (английский, французский языки)</option>
+                        <option>Романо-германская филология (французский, английский языки)</option>
+                        <option>Социальные коммуникации</option>
+                        <option>Теплогазоснабжение, вентиляция и охрана воздушного бассейна</option>
+                        <option>Техническая эксплуатация автомобилей</option>
+                        <option>Технический труд и предпринимательство</option>
+                        <option>Технологическое оборудование машиностроительного производства</option>
+                        <option>Технология машиностроения</option>
+                        <option>Технология. Информатика</option>
+                        <option>Технология. Физика</option>
+                        <option>Туризм и гостеприимство</option>
+                        <option>Физическая культура</option>
+                        <option>Финансы и кредит</option>
+                        <option>Химическая технология природных энергоносителей и углеродных материалов</option>
+                        <option>Экономика и управление на предприятии</option>
+                        <option>Экспертиза и управление недвижимостью</option>
+                        <option>Электроснабжение</option>
+                    </select>
+                    <label>Группа</label>
+                    <input type="text" name="groupForm" class="properties_seach_input">
                 </div>
                 <p><input type="submit" value="Найти"></p>
         </form>

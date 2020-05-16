@@ -120,9 +120,8 @@ header {
 .find_graduates li{
   border-bottom: 1px solid #000000;
 }
-.fild_fio_seach {
-  width: 70%;
-  height: 40px;
+.fild_lastname_seach {
+  margin-right: 20px;
 }
 /* стили левого блока главной страницы конец*/
 /* стили правоого блока главной страницы старт*/
@@ -139,3 +138,6 @@ header {
   margin-bottom: 10px;
 }
 /* стили правого блока главной страницы конец*/
+.aut{
+  float: right;
+}

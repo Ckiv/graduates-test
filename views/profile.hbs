@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Выпускники НПИ-ПГУ</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+    <p class="header_name">Полоцкий государственный университет</p>
+</header>
+<h1 class="main_page_h1">ВЫПУСКНИКИ НПИ-ПГУ</h1>
+<div class="content_main_page">
+        <div class="result_seach">
+            <ul class="find_graduates">
+                {{#each graduate}}
+                    <li>Фамилия: {{this.lastname}}<br>
+                        Имя: {{this.name}}<br>
+                        Отчество: {{this.patronymic}}<br>
+                        Факультет: {{this.title_faculty}} <br>
+                        Специальность: {{this.title_specialty}}<br>
+                        Форма обучения: {{this.type_training}}<br>
+                        Группа: {{this.groupp}}<br>
+                        Год выпуска: {{this.year}}<br>
+                        Номер диплома: {{this.diploma}}<br>
+                        Карьера: {{this.career}}<br>
+                        Отзыв: {{this.review}}<br>
+                        Номер телефона: {{this.number}}<br>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+</div>
+<footer>
+    <p>PSU - Copyright @ 2020</p>
+</footer>
+</body>
+<html>
