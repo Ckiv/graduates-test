@@ -4,18 +4,41 @@ const express = require("express");
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const passport = require('passport');
-
 const bodyParser = require("body-parser");
-const app = express();
-app.use(express.json());
 const urlencodedParser = express.urlencoded({extended: false});
 //const urlencodedParser = bodyParser.urlencoded({extended: false});
+
+const app = express();
+app.use(express.json());
+
+const expressHbs = require('express-handlebars');
+const hbs = require('hbs');
+app.engine(
+    'hbs',
+    expressHbs({
+        layoutsDir: 'views/layouts',
+        defaultLayout: 'layout',
+        extname: 'hbs'
+    })
+);
 app.set("view engine", "hbs");
+hbs.registerPartials(__dirname + '/views/partials');
 app.use(express.static('public'));
+
+// для загрузки фото
+const multer  = require("multer");
+//const upload = multer({dest:"public/photoGraduate/picture"})
+const storageConfig = multer.diskStorage({
+    destination: (req, file, cb) =>{
+        cb(null, "public/photoGraduate/picture");
+    },
+    filename: (req, file, cb) =>{
+        cb(null, file.originalname);
+    }
+});
 
 
 //для авторизации начало
-
 app.use(express.json()); //Переводим все полученные данные в объекты json
 app.use(express.urlencoded({extended: false})); //Запрещаем формировать массивы(Если передаете массив данных,лучше поставить true)
 //Инициализируем сессию
@@ -46,8 +69,7 @@ const logout = (req,res,next) => {
         next()
     }
 };
-//Подключаем нашу форму
-//app.get('/',(req, res) => res.sendFile(__dirname + '/index.html'));
+
 app.get("/login", function(req, res){
     res.render("login.hbs");
 });
@@ -96,6 +118,9 @@ app.get("/profile", auth, function(req, res){
     let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=?";
     pool.query(sql, [idGrad], function(err, data) {
         if(err) return console.log(err);
+        if (data[0].photolink===null){
+            data[0].photolink="nophoto.png";
+        }
         res.render("profile.hbs", {
             graduate: data
         });
@@ -105,15 +130,29 @@ app.get("/profile", auth, function(req, res){
 
 //роутинг редактирование профиля
 app.get("/profileedit", auth, function(req, res){
-    res.render("profileedit.hbs");
-});
+    let idGrad = idsess.idsession;
+    let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=?";
+    pool.query(sql, [idGrad], function(err, data) {
+        if(err) return console.log(err);
+        if (data[0].photolink===null){
+            data[0].photolink="nophoto.png";
+        }
+        res.render("profileedit.hbs", {
+            graduate: data
+        });
+    });
 
+});
+app.use(multer({storage:storageConfig}).single("filedata"));
 app.post("/profileedit", urlencodedParser, function(req, res){
+    let filedata = req.file;
+    console.log(filedata);
+
     if(!req.body) return res.sendStatus(400);
-        let sql = "UPDATE graduate SET career=?, review=?, number=? where graduate.id_grad=?";
-        pool.query(sql, [req.body.career, req.body.review, req.body.number, idsess.idsession], function (err, data) {
+        let sql = "UPDATE graduate SET career=?, review=?, number=?, email=?, photolink=? where graduate.id_grad=?";
+        pool.query(sql, [req.body.career, req.body.review, req.body.number, req.body.email, filedata.filename, idsess.idsession], function (err, data) {
             if(err) return console.log(err);
-            res.redirect("/");
+            res.redirect("/profileedit");
             console.log("успешная запись в бд");
         });
 
@@ -126,6 +165,11 @@ const pool = mysql.createPool({
     password: 'root',
     database: 'db_graduates',
     port: 3306
+});
+
+//роутинг страница администратора
+app.get("/administrator", function(req, res){
+    res.render("administrator.hbs");
 });
 
 // запись из Excel в переменную
@@ -196,6 +240,14 @@ app.post("/index", urlencodedParser, function(req, res){
             let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.lastname=?";
             pool.query(sql, [req.body.fild_lastname_seach], function(err, data) {
                 if(err) return console.log(err);
+                let datalenght=0;
+                while (datalenght<data.length){
+                    if (data[datalenght].photolink===null){
+                        data[datalenght].photolink="nophoto.png";
+
+                    }
+                    datalenght++;
+                }
                 res.render("index.hbs", {
                     graduate: data
                 });
@@ -206,6 +258,14 @@ app.post("/index", urlencodedParser, function(req, res){
             let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.name=?";
             pool.query(sql, [req.body.fild_name_seach], function(err, data) {
                 if(err) return console.log(err);
+                let datalenght=0;
+                while (datalenght<data.length){
+                    if (data[datalenght].photolink===null){
+                        data[datalenght].photolink="nophoto.png";
+
+                    }
+                    datalenght++;
+                }
                 res.render("index.hbs", {
                     graduate: data
                 });
@@ -216,6 +276,14 @@ app.post("/index", urlencodedParser, function(req, res){
             let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.lastname=? and graduate.name=?";
             pool.query(sql, [req.body.fild_lastname_seach, req.body.fild_name_seach], function(err, data) {
                 if(err) return console.log(err);
+                let datalenght=0;
+                while (datalenght<data.length){
+                    if (data[datalenght].photolink===null){
+                        data[datalenght].photolink="nophoto.png";
+
+                    }
+                    datalenght++;
+                }
                 res.render("index.hbs", {
                     graduate: data
                 });
@@ -231,6 +299,15 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=?";
         pool.query(sql, [req.body.facultyForm], function(err, data) {
             if(err) return console.log(err);
+            console.log("data.length: ", data.length);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -240,6 +317,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  training.type_training=?";
         pool.query(sql, [req.body.trainingForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -249,6 +334,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  graduate.year=?";
         pool.query(sql, [req.body.yearForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -258,6 +351,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and  training.type_training=?";
         pool.query(sql, [req.body.facultyForm, req.body.trainingForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -267,6 +368,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and  graduate.year=?";
         pool.query(sql, [req.body.facultyForm, req.body.yearForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -276,6 +385,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and training.type_training=? and  graduate.year=?";
         pool.query(sql, [req.body.trainingForm, req.body.yearForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -285,6 +402,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and  training.type_training=? and  graduate.year=?";
         pool.query(sql, [req.body.facultyForm, req.body.trainingForm, req.body.yearForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -294,6 +419,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  specialty.title_specialty=?";
         pool.query(sql, [req.body.specialtyForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -303,6 +436,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  graduate.groupp=?";
         pool.query(sql, [req.body.groupForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -312,6 +453,14 @@ app.post("/formseach", urlencodedParser, function(req, res){
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and specialty.title_specialty=? and graduate.groupp=? and training.type_training=? and graduate.year=?";
         pool.query(sql, [req.body.facultyForm, req.body.specialtyForm, req.body.groupForm, req.body.trainingForm, req.body.yearForm], function(err, data) {
             if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].photolink===null){
+                    data[datalenght].photolink="nophoto.png";
+
+                }
+                datalenght++;
+            }
             res.render("index.hbs", {
                 graduate: data
             });
@@ -329,7 +478,7 @@ app.post("/formseach", urlencodedParser, function(req, res){
 });
 
 
-app.post("/formseach", urlencodedParser, function(req, res) {
+/*app.post("/formseach", urlencodedParser, function(req, res) {
     if (!req.body) return res.sendStatus(400);
     if (req.body.facultyForm !== undefined && (req.body.specialtyForm === undefined && req.body.groupForm === '' && req.body.trainingForm === undefined && req.body.yearForm === '')) {
         let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=?";
@@ -341,7 +490,7 @@ app.post("/formseach", urlencodedParser, function(req, res) {
         });
     }
 });
-
+*/
 app.listen(3000, function(){
     console.log("Сервер ожидает подключения...");
 });

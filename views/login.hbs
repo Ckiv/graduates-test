@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Выпускники НПИ-ПГУ</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<header>
-    <p class="header_name">Полоцкий государственный университет</p>
-</header>
-<h1 class="main_page_h1">ВЫПУСКНИКИ НПИ-ПГУ</h1>
-<div class="content_main_page">
+<div class="content_main_page_login">
     <form method="POST" action="/login">
-        <input type="text" name="lastname">
-        <input type="text" name="diploma">
-        <input type="submit" value="Submit">
+        <div class="login_field">
+            <label>Фамилия</label>
+            <input type="text" name="lastname">
+            <label>Номер диплома</label>
+            <input type="text" name="diploma">
+            <input type="submit" value="Войти">
+        </div>
     </form>
 </div>
-<footer>
-    <p>PSU - Copyright @ 2020</p>
-</footer>
-</body>
-<html>

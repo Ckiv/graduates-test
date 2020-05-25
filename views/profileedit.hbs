@@ -1,26 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Выпускники НПИ-ПГУ</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<header>
-    <p class="header_name">Полоцкий государственный университет</p>
-</header>
-<h1 class="main_page_h1">ВЫПУСКНИКИ НПИ-ПГУ</h1>
-<div class="content_main_page">
+<div class="content_profile_page">
+    <div class="profile_photo">
+        {{#each graduate}}
+            <img src="/picture/photoGraduate/{{this.photolink}}" alt="photo graduate" class="photo_graduate">
+            <p>{{this.lastname}} {{this.name}} {{this.patronymic}}</p>
+        {{/each}}
+    </div>
+    <div class="profile_data">
+        {{#each graduate}}
+            <div class="trainer">
+                <p class="profile_data_zaglavie">Обучение</p>
+                <ul>
+                    <li><div class="profile_data_list_name">Год окончания:</div><div class="profile_data_list_inf">{{this.year}}</div></li>
+                    <li><div class="profile_data_list_name">Факультет:</div><div class="profile_data_list_inf">{{this.title_faculty}}</div></li>
+                    <li><div class="profile_data_list_name">Специальность:</div><div class="profile_data_list_inf">{{this.title_specialty}}</div></li>
+                    <li><div class="profile_data_list_name">Форма обучения:</div><div class="profile_data_list_inf">{{this.type_training}}</div></li>
+                    <li><div class="profile_data_list_name">Группа:</div><div class="profile_data_list_inf">{{this.groupp}}</div></li>
+                </ul>
+            </div>
+            <div class="contacts">
+                <p class="profile_data_zaglavie">Контакты</p>
+                <ul>
+                    <li><div class="profile_data_list_name">Телефон:</div><div class="profile_data_list_inf">{{this.number}}</div></li>
+                    <li><div class="profile_data_list_name">E-mail:</div><div class="profile_data_list_inf">{{this.email}}</div></li>
+                </ul>
+            </div>
+            <div class="career">
+                <p class="profile_data_zaglavie">Карьера</p>
+                {{this.career}}
+            </div>
+            <div class="review">
+                <p class="profile_data_zaglavie">Отзыв</p>
+                {{this.review}}
+            </div>
+        {{/each}}
 
-        <form action="/profileedit" method="post">
-            <input type="text" class="career" name="career" placeholder="Карьера">
-            <input type="text" class="review" name="review" placeholder="Отзыв">
-            <input type="text" class="number" name="number" placeholder="Номер телефона">
-            <input type="submit" value="записать">
+    </div>
+</div>
+<div class="content_main_profileedit_page">
+        <form action="/profileedit" method="post" enctype="multipart/form-data">
+            <div class="profileedit_inf">
+                <p class="profile_data_zaglavie">Обновить информацию</p>
+                <input type="text" class="profileedit_data" name="number" placeholder="Номер телефона">
+                <input type="text" class="profileedit_data" name="email" placeholder="E-mail">
+                <textarea type="text" class="profileedit_data" name="career" cols="40" rows="3" placeholder="Карьера"></textarea>
+                <textarea  type="text" class="profileedit_data" name="review" cols="40" rows="3" placeholder="Отзыв"></textarea>
+                <input type="file" name="filedata" class="profileedit_data">
+                <input type="submit" value="записать">
+            </div>
         </form>
 </div>
-<footer>
-    <p>PSU - Copyright @ 2020</p>
-</footer>
-</body>
-<html>

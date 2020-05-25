@@ -1,35 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Выпускники НПИ-ПГУ</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<header>
-    <p class="header_name">Полоцкий государственный университет</p>
-</header>
-<h1 class="main_page_h1">ВЫПУСКНИКИ НПИ-ПГУ</h1>
 <div class="content_main_page">
     <div class="main_page_left_block">
-
-        <form action="/index" class="fio_seach" method="post">
-            <input type="text" class="fild_lastname_seach" name="fild_lastname_seach" placeholder="Фамилия">
-            <input type="text" class="fild_name_seach" name="fild_name_seach" placeholder="Имя">
-            <input type="submit" value="Найти">
-        </form>
-        <div class="result_seach">
-            <ul class="find_graduates">
-                {{#each graduate}}
-                    <li><a href="profile?id={{this.id_grad}}">  {{this.lastname}} {{this.name}} {{this.patronymic}}</a><br> Факультет: {{this.title_faculty}} <br> Специальность: {{this.title_specialty}}<br>Группа: {{this.groupp}}<br> Год выпуска: {{this.year}}</li>
-                {{/each}}
-            </ul>
-        </div>
-    </div>
-    <div class="main_page_right_block">
         <form action="/formseach" class="seach" method="post">
             <div class="properties_seach">
-                <label>Факультет</label>
+                <label class="name_field_seach">Факультет</label>
                 <select name="facultyForm" class="properties_seach_input">
                     <option disabled selected>Выбрать факультет</option>
                     <option>Вечерний факультет</option>
@@ -58,7 +31,7 @@
                     <option>Финансово-экономический факультет</option>
                     <option>Юридический факультет</option>
                 </select>
-                <label>Форма обучения</label>
+                <label class="name_field_seach">Форма обучения</label>
                 <select name="trainingForm" class="properties_seach_input">
                     <option disabled selected>Выбрать форму обучения</option>
                     <option>дневная</option>
@@ -68,9 +41,9 @@
                     <option>дистанционная</option>
                     <option>вечерняя</option>
                 </select>
-                <label>Год выпуска</label>
+                <label class="name_field_seach">Год выпуска</label>
                 <input type="number" min="2011" max="2018" name="yearForm" class="properties_seach_input">
-                <label>Специальность</label>
+                <label class="name_field_seach">Специальность</label>
                 <select name="specialtyForm" class="properties_seach_input">
                     <option disabled selected>Выбрать специальность</option>
                     <option>Автомобильные дороги</option>
@@ -121,16 +94,33 @@
                     <option>Экспертиза и управление недвижимостью</option>
                     <option>Электроснабжение</option>
                 </select>
-                <label>Группа</label>
+                <label class="name_field_seach">Группа</label>
                 <input type="text" name="groupForm" class="properties_seach_input">
             </div>
             <p><input type="submit" value="Найти"></p>
         </form>
     </div>
 
+    <div class="main_page_right_block">
+        <form action="/index" class="fio_seach" method="post">
+            <input type="text" class="fild_lastname_seach" name="fild_lastname_seach" placeholder="Фамилия">
+            <input type="text" class="fild_name_seach" name="fild_name_seach" placeholder="Имя">
+            <input type="submit" value="Найти">
+        </form>
+        <div class="result_seach">
+
+            {{#each graduate}}
+                <div class="find_graduates_data">
+                    <a href="profile?id={{this.id_grad}}"><img src="/picture/photoGraduate/{{this.photolink}}" alt="photo" class="graduate_photo_list"></a>
+                    <ul class="find_graduates_data_list">
+                        <li><a href="profile?id={{this.id_grad}}">{{this.lastname}} {{this.name}}</a></li>
+                        <li>Год выпуска: {{this.year}}</li>
+                        <li>Факультет: {{this.title_faculty}}</li>
+                        <li>Специальность: {{this.title_specialty}}</li>
+                    </ul>
+                </div>
+            {{/each}}
+
+        </div>
+    </div>
 </div>
-<footer>
-    <p>PSU - Copyright @ 2020</p>
-</footer>
-</body>
-<html>
