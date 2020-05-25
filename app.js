@@ -172,62 +172,60 @@ app.get("/administrator", function(req, res){
     res.render("administrator.hbs");
 });
 
-// запись из Excel в переменную
-var parser = new (require('simple-excel-to-json').XlsParser)();
-var doc = parser.parseXls2Json('./public/grad-db.xlsx');
-//print the data of the first sheet
-var data = doc[0];
+app.post("/administrator", urlencodedParser, function(req, res){
 
-/*
+    let filedata = req.file;
+    console.log(filedata);
+    // запись из Excel в переменную
+    var parser = new (require('simple-excel-to-json').XlsParser)();
+    var doc = parser.parseXls2Json('./public/grad-db.xlsx');
+    var data = doc[0];
 
-// запись в БД
-async function setDataGraduate() {
+        const specialty =  pool.query('SELECT * FROM specialty');
+        const faculty =  pool.query('SELECT * FROM faculty');
+        const user =  pool.query('SELECT * FROM userr');
+        const training =  pool.query('SELECT * FROM training');
 
-    const specialty = await pool.query('SELECT * FROM specialty');
-    const faculty = await pool.query('SELECT * FROM faculty');
-    const user = await pool.query('SELECT * FROM userr');
-    const training = await pool.query('SELECT * FROM training');
+        let idSpecialty;
+        let idFaculty;
+        let idUser=2;
+        let idTraining;
 
-    let idSpecialty;
-    let idFaculty;
-    let idUser=2;
-    let idTraining;
-
-    for (let i=0; i<=235; i++){
-        //написать условия для определения id для записи
-        for (let tempSpec=0; tempSpec<specialty[0].length; tempSpec++){
-            if (data[i].specialty === specialty[0][tempSpec].title_specialty){
-                idSpecialty = specialty[0][tempSpec].id;
+        for (let i=0; i<=235; i++){
+            //написать условия для определения id для записи
+            for (let tempSpec=0; tempSpec<specialty[0].length; tempSpec++){
+                if (data[i].specialty === specialty[0][tempSpec].title_specialty){
+                    idSpecialty = specialty[0][tempSpec].id;
+                }
             }
-        }
 
-        for (let tempFacult=0; tempFacult<faculty[0].length; tempFacult++){
-            if (data[i].faculty === faculty[0][tempFacult].title_faculty){
-                idFaculty = faculty[0][tempFacult].id;
+            for (let tempFacult=0; tempFacult<faculty[0].length; tempFacult++){
+                if (data[i].faculty === faculty[0][tempFacult].title_faculty){
+                    idFaculty = faculty[0][tempFacult].id;
+                }
             }
-        }
 
-        for (let tempTrain=0; tempTrain<training[0].length; tempTrain++){
-            if (data[i].training === training[0][tempTrain].type_training){
-                idTraining = training[0][tempTrain].id;
+            for (let tempTrain=0; tempTrain<training[0].length; tempTrain++){
+                if (data[i].training === training[0][tempTrain].type_training){
+                    idTraining = training[0][tempTrain].id;
+                }
             }
+
+            pool.query("INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].diploma, data[i].name, data[i].lastname, data[i].patronymic],  function(err, data) {
+                if(err) return console.log(err);
+                console.log("выполнено");
+            });
+
+            idSpecialty=0;
+            idFaculty=0;
+            idTraining=0;
+
         }
+        console.log("успешная запись в бд");
 
-        pool.query("INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].diploma, data[i].name, data[i].lastname, data[i].patronymic],  function(err, data) {
-            if(err) return console.log(err);
-            console.log("выполнено");
-        });
+});
 
-        idSpecialty=0;
-        idFaculty=0;
-        idTraining=0;
 
-    }
-    console.log("успешная запись в бд");
-}
-
-setDataGraduate();
-*/
 //роутинг стартовая страница
 app.get("/", function(req, res){
     res.render("index.hbs");
