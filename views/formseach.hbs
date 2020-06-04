@@ -111,11 +111,11 @@
 
             {{#each graduate}}
                 <div class="find_graduates_data">
-                    <a href="profile?id={{this.id_grad}}"><img src="/picture/photoGraduate/{{this.photolink}}" alt="photo" class="graduate_photo_list"></a>
+                    <a href="profile?id={{this.id_grad}}"><img src="/picture/photoGraduate/{{this.avatarphoto}}" alt="photo" class="graduate_photo_list"></a>
                     <ul class="find_graduates_data_list">
                         <li><a href="profile?id={{this.id_grad}}">{{this.lastname}} {{this.name}}</a></li>
                         <li>Год выпуска: {{this.year}}</li>
-                        <li>Факультет: {{this.title_faculty}}</li>
+                        <li>{{this.title_faculty}}</li>
                         <li>Специальность: {{this.title_specialty}}</li>
                     </ul>
                 </div>

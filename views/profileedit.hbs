@@ -1,7 +1,7 @@
 <div class="content_profile_page">
     <div class="profile_photo">
         {{#each graduate}}
-            <img src="/picture/photoGraduate/{{this.photolink}}" alt="photo graduate" class="photo_graduate">
+            <img src="/picture/photoGraduate/{{this.avatarphoto}}" alt="photo graduate" class="photo_graduate">
             <p>{{this.lastname}} {{this.name}} {{this.patronymic}}</p>
         {{/each}}
     </div>
@@ -48,4 +48,10 @@
                 <input type="submit" value="записать">
             </div>
         </form>
+    <form action="/gallery" method="post" enctype="multipart/form-data">
+        <div class="profileedit_inf">
+            <input type="file" name="filedata" class="profileedit_data" multiple>
+            <input type="submit" value="записать">
+        </div>
+    </form>
 </div>

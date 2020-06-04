@@ -1,4 +1,5 @@
 const mysql = require("mysql2"); //const mysql = require("mysql2/promise");
+//const mysqlasyn = require("mysql2/promise");
 const express = require("express");
 
 const session = require('express-session');
@@ -27,16 +28,25 @@ app.use(express.static('public'));
 
 // для загрузки фото
 const multer  = require("multer");
-//const upload = multer({dest:"public/photoGraduate/picture"})
+
 const storageConfig = multer.diskStorage({
     destination: (req, file, cb) =>{
-        cb(null, "public/photoGraduate/picture");
+        cb(null, "public/picture/photoGraduate");
     },
     filename: (req, file, cb) =>{
         cb(null, file.originalname);
     }
 });
+const upload = multer({storage: storageConfig});
 
+// пул подключения к бд
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'db_graduates',
+    port: 3306
+});
 
 //для авторизации начало
 app.use(express.json()); //Переводим все полученные данные в объекты json
@@ -118,14 +128,14 @@ app.get("/profile", auth, function(req, res){
     let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=?";
     pool.query(sql, [idGrad], function(err, data) {
         if(err) return console.log(err);
-        if (data[0].photolink===null){
-            data[0].photolink="nophoto.png";
+        if (data[0].avatarphoto===null){
+            data[0].avatarphoto="nophoto.png";
         }
         res.render("profile.hbs", {
             graduate: data
         });
     });
-    //res.render("profile.hbs");
+      // res.render("profile.hbs");
 });
 
 //роутинг редактирование профиля
@@ -134,8 +144,8 @@ app.get("/profileedit", auth, function(req, res){
     let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=?";
     pool.query(sql, [idGrad], function(err, data) {
         if(err) return console.log(err);
-        if (data[0].photolink===null){
-            data[0].photolink="nophoto.png";
+        if (data[0].avatarphoto===null){
+            data[0].avatarphoto="nophoto.png";
         }
         res.render("profileedit.hbs", {
             graduate: data
@@ -143,13 +153,13 @@ app.get("/profileedit", auth, function(req, res){
     });
 
 });
-app.use(multer({storage:storageConfig}).single("filedata"));
-app.post("/profileedit", urlencodedParser, function(req, res){
+//app.use(multer({storage:storageConfig}).array("filedata",3));
+app.post("/profileedit", urlencodedParser, upload.single('filedata'), function(req, res){
     let filedata = req.file;
-    console.log(filedata);
+    console.log(filedata.length);
 
     if(!req.body) return res.sendStatus(400);
-        let sql = "UPDATE graduate SET career=?, review=?, number=?, email=?, photolink=? where graduate.id_grad=?";
+        let sql = "UPDATE graduate SET career=?, review=?, number=?, email=?, avatarphoto=? where graduate.id_grad=?";
         pool.query(sql, [req.body.career, req.body.review, req.body.number, req.body.email, filedata.filename, idsess.idsession], function (err, data) {
             if(err) return console.log(err);
             res.redirect("/profileedit");
@@ -158,13 +168,20 @@ app.post("/profileedit", urlencodedParser, function(req, res){
 
     //res.render("profileedit.hbs");
 });
-// пул для поиска
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'db_graduates',
-    port: 3306
+
+app.post("/gallery", urlencodedParser, upload.array('filedata', 5), function(req, res){
+    let filedata = req.files;
+    let i=0;
+    let sqliseert = "INSERT INTO photos (id_graduate, photo_name) VALUES (?, ?)";
+    while (i<filedata.length){
+        pool.query(sqliseert, [idsess.idsession, filedata[i].filename], function (err, data) {
+            if(err) return console.log(err);
+
+            console.log("успешная запись в бд: ", i);
+        });
+        i++;
+    }
+    res.redirect("/profileedit");
 });
 
 //роутинг страница администратора
@@ -172,48 +189,59 @@ app.get("/administrator", function(req, res){
     res.render("administrator.hbs");
 });
 
+//app.use(multer({storage:storageConfig}).single("filedata"));
 app.post("/administrator", urlencodedParser, function(req, res){
 
     let filedata = req.file;
-    console.log(filedata);
     // запись из Excel в переменную
     var parser = new (require('simple-excel-to-json').XlsParser)();
-    var doc = parser.parseXls2Json('./public/grad-db.xlsx');
+    var doc = parser.parseXls2Json('public/picture/photoGraduate/'+filedata.filename);
     var data = doc[0];
+    console.log("из количество файла", data.length);
+    var fs = require('fs');
+    var datadb = JSON.parse(fs.readFileSync('public/datadb.json', 'utf8'));
 
-        const specialty =  pool.query('SELECT * FROM specialty');
-        const faculty =  pool.query('SELECT * FROM faculty');
-        const user =  pool.query('SELECT * FROM userr');
-        const training =  pool.query('SELECT * FROM training');
+    let specialty = datadb.specialty;
+    let faculty = datadb.faculty;
+    let training = datadb.training;
 
-        let idSpecialty;
-        let idFaculty;
-        let idUser=2;
-        let idTraining;
+    let idSpecialty;
+    let idFaculty;
+    let idUser=2;
+    let idTraining;
 
-        for (let i=0; i<=235; i++){
+        for (let i=0; i<=5838; i++){
             //написать условия для определения id для записи
-            for (let tempSpec=0; tempSpec<specialty[0].length; tempSpec++){
-                if (data[i].specialty === specialty[0][tempSpec].title_specialty){
-                    idSpecialty = specialty[0][tempSpec].id;
+            for (let tempSpec=0; tempSpec<specialty.length; tempSpec++){
+                if (data[i].specialty === specialty[tempSpec].title_specialty){
+                    idSpecialty = specialty[tempSpec].id;
                 }
             }
 
-            for (let tempFacult=0; tempFacult<faculty[0].length; tempFacult++){
-                if (data[i].faculty === faculty[0][tempFacult].title_faculty){
-                    idFaculty = faculty[0][tempFacult].id;
+            for (let tempFacult=0; tempFacult<faculty.length; tempFacult++){
+                if (data[i].faculty === faculty[tempFacult].title_faculty){
+                    idFaculty = faculty[tempFacult].id;
                 }
             }
 
-            for (let tempTrain=0; tempTrain<training[0].length; tempTrain++){
-                if (data[i].training === training[0][tempTrain].type_training){
-                    idTraining = training[0][tempTrain].id;
+            for (let tempTrain=0; tempTrain<training.length; tempTrain++){
+                if (data[i].training === training[tempTrain].type_training){
+                    idTraining = training[tempTrain].id;
                 }
             }
 
-            pool.query("INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].diploma, data[i].name, data[i].lastname, data[i].patronymic],  function(err, data) {
+            /*pool.query("INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].diploma, data[i].name, data[i].lastname, data[i].patronymic],  function(err, data) {
                 if(err) return console.log(err);
-                console.log("выполнено");
+                res.redirect("/administrator");
+                console.log("успешная запись в бд");
+            });
+            */
+            if(!req.body) return res.sendStatus(400);
+            let sql = "INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            pool.query(sql, [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].diploma, data[i].name, data[i].lastname, data[i].patronymic], function (err, data) {
+                if(err) return console.log(err);
+                console.log("запись выпускника номер: ", i);
+
             });
 
             idSpecialty=0;
@@ -221,8 +249,8 @@ app.post("/administrator", urlencodedParser, function(req, res){
             idTraining=0;
 
         }
-        console.log("успешная запись в бд");
-
+    console.log("успешная запись в бд");
+    res.redirect("/administrator");
 });
 
 
@@ -231,8 +259,10 @@ app.get("/", function(req, res){
     res.render("index.hbs");
 });
 
+
+
 // поиск выпускников по фио
-app.post("/index", urlencodedParser, function(req, res){
+app.post("/fioseach", urlencodedParser, function(req, res){
     if (!req.body) return res.sendStatus(400);
         if (req.body.fild_lastname_seach!=='' && req.body.fild_name_seach===''){
             let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.lastname=?";
@@ -240,8 +270,8 @@ app.post("/index", urlencodedParser, function(req, res){
                 if(err) return console.log(err);
                 let datalenght=0;
                 while (datalenght<data.length){
-                    if (data[datalenght].photolink===null){
-                        data[datalenght].photolink="nophoto.png";
+                    if (data[datalenght].avatarphoto===null){
+                        data[datalenght].avatarphoto="nophoto.png";
 
                     }
                     datalenght++;
@@ -258,8 +288,8 @@ app.post("/index", urlencodedParser, function(req, res){
                 if(err) return console.log(err);
                 let datalenght=0;
                 while (datalenght<data.length){
-                    if (data[datalenght].photolink===null){
-                        data[datalenght].photolink="nophoto.png";
+                    if (data[datalenght].avatarphoto===null){
+                        data[datalenght].avatarphoto="nophoto.png";
 
                     }
                     datalenght++;
@@ -276,8 +306,8 @@ app.post("/index", urlencodedParser, function(req, res){
                 if(err) return console.log(err);
                 let datalenght=0;
                 while (datalenght<data.length){
-                    if (data[datalenght].photolink===null){
-                        data[datalenght].photolink="nophoto.png";
+                    if (data[datalenght].avatarphoto===null){
+                        data[datalenght].avatarphoto="nophoto.png";
 
                     }
                     datalenght++;
@@ -300,8 +330,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             console.log("data.length: ", data.length);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -317,8 +347,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -334,8 +364,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -351,8 +381,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -368,8 +398,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -385,8 +415,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -402,8 +432,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -419,8 +449,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -436,8 +466,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;
@@ -453,8 +483,8 @@ app.post("/formseach", urlencodedParser, function(req, res){
             if(err) return console.log(err);
             let datalenght=0;
             while (datalenght<data.length){
-                if (data[datalenght].photolink===null){
-                    data[datalenght].photolink="nophoto.png";
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
 
                 }
                 datalenght++;

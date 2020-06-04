@@ -170,8 +170,11 @@ header{
     margin-bottom: 28px;
 }
 .find_graduates_data_list {
-    padding: 0;
+    padding-right: 0;
     list-style: none;
+}
+.find_graduates_data_list li {
+    padding-right: 6px;
 }
 .find_graduates_data_list :first-child{
     padding-bottom: 15px;
