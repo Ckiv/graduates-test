@@ -1,12 +1,15 @@
 <div class="content_profile_page">
+
     <div class="profile_photo">
         {{#each graduate}}
             <img src="/picture/photoGraduate/{{this.avatarphoto}}" alt="photo graduate" class="photo_graduate">
             <p>{{this.lastname}} {{this.name}} {{this.patronymic}}</p>
         {{/each}}
+
     </div>
+
         <div class="profile_data">
-                {{#each graduate}}
+            {{#each graduate}}
                     <div class="trainer">
                         <p class="profile_data_zaglavie">Обучение</p>
                         <ul>
@@ -32,7 +35,31 @@
                         <p class="profile_data_zaglavie">Отзыв</p>
                         {{this.review}}
                     </div>
-                {{/each}}
+
+            {{/each}}
+
+                    <p class="profile_data_zaglavie">Галлерея</p>
+                    <div class="gallery">
+                        {{#each gallery}}
+                            <img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery" class="photo_gallery" id="btn_modal_window">
+                            <div id="my_modal" class="modal">
+                                <div class="modal_content">
+                                    <span class="close_modal_window">×</span>
+                                    <img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery">
+                                </div>
+                            </div>
+                        {{/each}}
+
+                    </div>
+            <!--<button id="btn_modal_window">Open Modal</button>
+            <div id="my_modal" class="modal">
+                <div class="modal_content">
+                    <span class="close_modal_window">×</span>
+                    <p>Модальное окно!</p>
+                </div>
+            </div>-->
+
 
         </div>
+
 </div>

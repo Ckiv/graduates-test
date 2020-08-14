@@ -125,7 +125,25 @@ app.get('/logout', (req,res) => {
 //роутинг страница профиля
 app.get("/profile", auth, function(req, res){
     let idGrad = req.query.id;
+    let sqlgallery = "SELECT * FROM photos where id_graduate=?";
     let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=?";
+    pool.query(sql, [idGrad], function(err, data) {
+        if(err) return console.log(err);
+        if (data[0].avatarphoto===null){
+            data[0].avatarphoto="nophoto.png";
+        }
+        pool.query(sqlgallery, [idGrad], function(err, datagallery) {
+            if(err) return console.log(err);
+            res.render("profile.hbs", {
+                graduate: data,
+                gallery: datagallery
+            });
+        });
+    });
+    // res.render("profile.hbs");
+});
+
+/*let sql = "SELECT * FROM graduate, faculty, specialty, training, photos  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=id_graduate and graduate.id_grad=?";
     pool.query(sql, [idGrad], function(err, data) {
         if(err) return console.log(err);
         if (data[0].avatarphoto===null){
@@ -134,9 +152,8 @@ app.get("/profile", auth, function(req, res){
         res.render("profile.hbs", {
             graduate: data
         });
-    });
-      // res.render("profile.hbs");
-});
+    });*/
+
 
 //роутинг редактирование профиля
 app.get("/profileedit", auth, function(req, res){
