@@ -41,23 +41,31 @@
                     <p class="profile_data_zaglavie">Галлерея</p>
                     <div class="gallery">
                         {{#each gallery}}
-                            <img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery" class="photo_gallery" id="btn_modal_window">
-                            <div id="my_modal" class="modal">
-                                <div class="modal_content">
-                                    <span class="close_modal_window">×</span>
-                                    <img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery">
+                        <a href="#" class="prefix-open"><img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery" class="photo_gallery"></a>
+                            <div id="Modal" class="prefix-Dialog">
+                                <div>
+                                    <img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery" class="#">
+                                    <a class="prefix-close" title="Закрыть" href="#close"></a>
                                 </div>
                             </div>
                         {{/each}}
 
                     </div>
-            <!--<button id="btn_modal_window">Open Modal</button>
-            <div id="my_modal" class="modal">
-                <div class="modal_content">
-                    <span class="close_modal_window">×</span>
-                    <p>Модальное окно!</p>
+
+
+
+
+            <!--<a href="#" class="prefix-open">Открыть модальное окно через JS</a>
+            <div id="Modal" class="prefix-Dialog">
+                <div>
+                    <h3>Заголовок</h3>
+                    <div class="prefix-tabs">
+                        данные окна
+                    </div>
+                    <a class="prefix-close" title="Закрыть" href="#close"></a>
                 </div>
-            </div>-->
+            </div>
+            -->
 
 
         </div>

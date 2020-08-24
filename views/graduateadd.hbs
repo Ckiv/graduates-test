@@ -1,0 +1,123 @@
+<div class="add_graduate">
+        <form action="/formadd" class="formadd" method="post">
+    <div class="wrapper_addform">
+        <div class="block_edit">
+            <label class="name_field_seach">Фамилия</label>
+            <input type="text" name="lastnameForm" class="graduate_add_form">
+            <label class="name_field_seach">Факультет</label>
+            <select name="facultyForm" class="graduate_add_form">
+                <option disabled selected>Выбрать факультет</option>
+                <option>Вечерний факультет</option>
+                <option>Геодезический факультет</option>
+                <option>Гуманитарный факультет</option>
+                <option>Дневной факультет</option>
+                <option>Заочный факультет</option>
+                <option>Инженерно-строительный факультет</option>
+                <option>Инженерно-технологический факультет</option>
+                <option>Инженерно-экологический факультет</option>
+                <option>Историко-правоведческий факультет</option>
+                <option>Историко-филологический факультет</option>
+                <option>Машиностроительный факультет</option>
+                <option>Механико-строительный факультет</option>
+                <option>Механико-технологический факультет</option>
+                <option>Радиотехнический факультет</option>
+                <option>Санитарно-технический факультет</option>
+                <option>Спортивно-педагогический факультет</option>
+                <option>Строительный факультет</option>
+                <option>Технологический факультет</option>
+                <option>Факультет иностранных языков</option>
+                <option>Факультет информационных технологий</option>
+                <option>Факультет машиностроения и автомобильного транспорта</option>
+                <option>Факультет педагогического воспитания и физической культуры</option>
+                <option>Факультет экономики и права</option>
+                <option>Финансово-экономический факультет</option>
+                <option>Юридический факультет</option>
+            </select>
+            <label class="name_field_seach">Группа</label>
+            <input type="text" name="groupForm" class="graduate_add_form">
+        </div>
+        <div class="block_edit">
+            <label class="name_field_seach">Имя</label>
+            <input type="text" name="nameForm" class="graduate_add_form">
+            <label class="name_field_seach">Специальность</label>
+            <select name="specialtyForm" class="graduate_add_form">
+                <option disabled selected>Выбрать специальность</option>
+                <option>Автомобильные дороги</option>
+                <option>Автосервис</option>
+                <option>Английский язык. Немецкий язык</option>
+                <option>Английский язык. Французский язык</option>
+                <option>Архитектура</option>
+                <option>Белорусский язык и литература. Иностранный язык (английский)</option>
+                <option>Бухгалтерский учёт, анализ и аудит</option>
+                <option>Бухгалтерский учёт, анализ и аудит (сокращенная форма)</option>
+                <option>Водоснабжение, водоотведение и охрана водных ресурсов</option>
+                <option>Вычислительные машины, системы и сети</option>
+                <option>Дизайн (предметно-пространственной среды)</option>
+                <option>Дошкольное образование</option>
+                <option>Дошкольное образование. Английский язык</option>
+                <option>Иностранный язык (английский). Белорусский язык и литература</option>
+                <option>История (отечественная и всеобщая)</option>
+                <option>Компьютерная безопасность</option>
+                <option>Логистика</option>
+                <option>Машины и аппараты химических производств и предприятий строительных материалов</option>
+                <option>Менеджмент</option>
+                <option>Моделирование и компьютерное проектирование радиоэлектронных средств</option>
+                <option>Оборудование и технология сварочного производства</option>
+                <option>Правоведение</option>
+                <option>Практическая психология</option>
+                <option>Практическая психология. Английский язык</option>
+                <option>Программное обеспечение информационных технологий</option>
+                <option>Проектирование, сооружение и эксплуатация газонефтесооружений и газонефтехранилищ</option>
+                <option>Промышленная электроника</option>
+                <option>Промышленное и гражданское строительство</option>
+                <option>Радиотехника</option>
+                <option>Романо-германская филология (английский, немецкий языки)</option>
+                <option>Романо-германская филология (английский, французский языки)</option>
+                <option>Романо-германская филология (французский, английский языки)</option>
+                <option>Социальные коммуникации</option>
+                <option>Теплогазоснабжение, вентиляция и охрана воздушного бассейна</option>
+                <option>Техническая эксплуатация автомобилей</option>
+                <option>Технический труд и предпринимательство</option>
+                <option>Технологическое оборудование машиностроительного производства</option>
+                <option>Технология машиностроения</option>
+                <option>Технология. Информатика</option>
+                <option>Технология. Физика</option>
+                <option>Туризм и гостеприимство</option>
+                <option>Физическая культура</option>
+                <option>Финансы и кредит</option>
+                <option>Химическая технология природных энергоносителей и углеродных материалов</option>
+                <option>Экономика и управление на предприятии</option>
+                <option>Экспертиза и управление недвижимостью</option>
+                <option>Электроснабжение</option>
+            </select>
+            <label class="name_field_seach">Год выпуска</label>
+            <input type="number" min="2011" max="2018" name="yearForm" class="graduate_add_form">
+        </div>
+        <div class="block_edit">
+            <label class="name_field_seach">Отчество</label>
+            <input type="text" name="patronymicForm" class="graduate_add_form">
+            <label class="name_field_seach">Форма обучения</label>
+            <select name="trainingForm" class="graduate_add_form">
+                <option disabled selected>Выбрать форму обучения</option>
+                <option>дневная</option>
+                <option>дневная сокращенная</option>
+                <option>заочная</option>
+                <option>заочная сокращенная</option>
+                <option>дистанционная</option>
+                <option>вечерняя</option>
+            </select>
+            <label class="name_field_seach">Номер диплома</label>
+            <input type="text" name="diplomaForm" class="graduate_add_form">
+        </div>
+    </div>
+    <p><input type="submit" value="Добавить"></p>
+    </form>
+    <form action="/addfile" method="post" enctype="multipart/form-data">
+        <div class="add_graduate">
+            <label>Добавить выпускников</label>
+            <input type="file" name="filedata" class="graduate_data">
+            <input type="submit" value="записать">
+        </div>
+    </form>
+    <a href="administrator">admin page</a>
+</div>

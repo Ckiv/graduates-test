@@ -110,6 +110,7 @@ const auth = (req,res,next) => {
         return res.redirect('/erroraccess');
     }
 };
+
 app.get("/erroraccess", function(req, res){
     res.render("erroraccess.hbs");
 });
@@ -202,12 +203,383 @@ app.post("/gallery", urlencodedParser, upload.array('filedata', 5), function(req
 });
 
 //роутинг страница администратора
-app.get("/administrator", function(req, res){
-    res.render("administrator.hbs");
+app.get("/administrator", auth, function(req, res){
+    let idGrad = idsess.idsession;
+    if (idGrad === 5843) {
+        res.render("administrator.hbs");
+    }
+    else {
+        return res.redirect('/erroraccess');
+    }
 });
 
-//app.use(multer({storage:storageConfig}).single("filedata"));
-app.post("/administrator", urlencodedParser, function(req, res){
+//страница администратора поиск
+app.post("/formseachadmin", urlencodedParser, function(req, res){
+    if (!req.body) return res.sendStatus(400);
+    /* поиск оп форме справа */
+    if (req.body.facultyForm!==undefined && (req.body.specialtyForm===undefined && req.body.groupForm==='' && req.body.trainingForm===undefined && req.body.yearForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=?";
+        pool.query(sql, [req.body.facultyForm], function(err, data) {
+            if(err) return console.log(err);
+            console.log("data.length: ", data.length);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if (req.body.trainingForm!==undefined && (req.body.facultyForm===undefined && req.body.specialtyForm===undefined && req.body.groupForm==='' && req.body.yearForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  training.type_training=?";
+        pool.query(sql, [req.body.trainingForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if (req.body.yearForm!=='' && (req.body.facultyForm===undefined && req.body.specialtyForm===undefined && req.body.groupForm==='' && req.body.trainingForm===undefined)){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  graduate.year=?";
+        pool.query(sql, [req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if ((req.body.facultyForm!==undefined && req.body.trainingForm!==undefined) && (req.body.specialtyForm===undefined && req.body.groupForm==='' && req.body.yearForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and  training.type_training=?";
+        pool.query(sql, [req.body.facultyForm, req.body.trainingForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if ((req.body.facultyForm!==undefined && req.body.yearForm!=='') && (req.body.specialtyForm===undefined && req.body.groupForm==='' && req.body.trainingForm===undefined)){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and  graduate.year=?";
+        pool.query(sql, [req.body.facultyForm, req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if ((req.body.trainingForm!==undefined && req.body.yearForm!=='') && (req.body.facultyForm===undefined && req.body.specialtyForm===undefined && req.body.groupForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and training.type_training=? and  graduate.year=?";
+        pool.query(sql, [req.body.trainingForm, req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if ((req.body.facultyForm!==undefined && req.body.trainingForm!==undefined && req.body.yearForm!=='') && (req.body.specialtyForm===undefined && req.body.groupForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and  training.type_training=? and  graduate.year=?";
+        pool.query(sql, [req.body.facultyForm, req.body.trainingForm, req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if (req.body.specialtyForm!==undefined && (req.body.facultyForm===undefined || req.body.groupForm==='' || req.body.trainingForm===undefined || req.body.yearForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  specialty.title_specialty=?";
+        pool.query(sql, [req.body.specialtyForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else if (req.body.groupForm!=='' && (req.body.facultyForm===undefined || req.body.specialtyForm===undefined || req.body.trainingForm===undefined || req.body.yearForm==='')){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  graduate.groupp=?";
+        pool.query(sql, [req.body.groupForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else {
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and  faculty.title_faculty=? and specialty.title_specialty=? and graduate.groupp=? and training.type_training=? and graduate.year=?";
+        pool.query(sql, [req.body.facultyForm, req.body.specialtyForm, req.body.groupForm, req.body.trainingForm, req.body.yearForm], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+
+});
+//страница администратора поиск по фио
+app.post("/fioseachadmin", urlencodedParser, function(req, res){
+    if (!req.body) return res.sendStatus(400);
+    if (req.body.fild_lastname_seach!=='' && req.body.fild_name_seach===''){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.lastname=?";
+        pool.query(sql, [req.body.fild_lastname_seach], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+
+    else if (req.body.fild_lastname_seach==='' && req.body.fild_name_seach!==''){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.name=?";
+        pool.query(sql, [req.body.fild_name_seach], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+
+    else if (req.body.fild_lastname_seach!=='' && req.body.fild_name_seach!==''){
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.lastname=? and graduate.name=?";
+        pool.query(sql, [req.body.fild_lastname_seach, req.body.fild_name_seach], function(err, data) {
+            if(err) return console.log(err);
+            let datalenght=0;
+            while (datalenght<data.length){
+                if (data[datalenght].avatarphoto===null){
+                    data[datalenght].avatarphoto="nophoto.png";
+
+                }
+                datalenght++;
+            }
+            res.render("administrator.hbs", {
+                graduate: data
+            });
+        });
+    }
+    //res.render("index.hbs");
+});
+
+app.post("/delete", function(req, res){
+    let idGrad = req.query.id;
+    pool.query("DELETE FROM graduate WHERE id_grad=?", [idGrad], function(err, data) {
+        if(err) return console.log(err);
+        res.redirect("/administrator");
+    });
+});
+
+app.get("/graduateedit", function(req, res){
+    let idGrad = req.query.id;
+    let idGradadmin = idsess.idsession;
+    if (idGradadmin === 5843) {
+        let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=?";
+        pool.query(sql, [idGrad], function(err, data) {
+            if(err) return console.log(err);
+            console.log("id page", idGrad);
+            res.render("graduateedit.hbs", {
+                graduate: data
+            });
+        });
+    }
+    else {
+        return res.redirect('/erroraccess');
+    }
+});
+
+app.post("/formedit", urlencodedParser, function (req, res) {
+    let idGrad = req.query.id;
+    if(!req.body) return res.sendStatus(400);
+    let facultyForm = req.body.facultyForm;
+    let trainingForm = req.body.trainingForm;
+    let yearForm = req.body.yearForm;
+    let specialtyForm = req.body.specialtyForm;
+    let groupForm = req.body.groupForm;
+    let fs = require('fs');
+    let datadb = JSON.parse(fs.readFileSync('public/datadb.json', 'utf8'));
+
+    let specialty = datadb.specialty;
+    let faculty = datadb.faculty;
+    let training = datadb.training;
+
+    let idSpecialty;
+    let idFaculty;
+    let idTraining;
+
+    for (let tempSpec=0; tempSpec<specialty.length; tempSpec++){
+        if (specialtyForm === specialty[tempSpec].title_specialty){
+            idSpecialty = specialty[tempSpec].id;
+        }
+    }
+
+    for (let tempFacult=0; tempFacult<faculty.length; tempFacult++){
+        if (facultyForm === faculty[tempFacult].title_faculty){
+            idFaculty = faculty[tempFacult].id;
+        }
+    }
+
+    for (let tempTrain=0; tempTrain<training.length; tempTrain++){
+        if (trainingForm === training[tempTrain].type_training){
+            idTraining = training[tempTrain].id;
+        }
+    }
+
+    pool.query("UPDATE graduate SET id_faculty=?, id_specialty=?, id_training=?, groupp=?, year=?  WHERE id_grad=?", [idFaculty, idSpecialty, idTraining, groupForm, yearForm, idGrad ], function(err, data) {
+        if(err) return console.log(err);
+        console.log("update done");
+        console.log("id page", idGrad);
+        res.redirect("/administrator");
+    });
+});
+
+app.get("/graduateadd", function(req, res){
+    let idGrad = idsess.idsession;
+    if (idGrad === 5843) {
+        res.render("graduateadd.hbs");
+    }
+    else {
+        return res.redirect('/erroraccess');
+    }
+});
+
+app.post("/formadd", urlencodedParser, function (req, res){
+    let facultyForm = req.body.facultyForm;
+    let trainingForm = req.body.trainingForm;
+    let yearForm = req.body.yearForm;
+    let specialtyForm = req.body.specialtyForm;
+    let groupForm = req.body.groupForm;
+    let lastnameForm = req.body.lastnameForm;
+    let nameForm = req.body.nameForm;
+    let patronymicForm = req.body.patronymicForm;
+    let diplomaForm = req.body.diplomaForm;
+    let fs = require('fs');
+    let datadb = JSON.parse(fs.readFileSync('public/datadb.json', 'utf8'));
+
+    let specialty = datadb.specialty;
+    let faculty = datadb.faculty;
+    let training = datadb.training;
+
+    let idSpecialty;
+    let idFaculty;
+    let idTraining;
+    let idUser=2;
+
+    for (let tempSpec=0; tempSpec<specialty.length; tempSpec++){
+        if (specialtyForm === specialty[tempSpec].title_specialty){
+            idSpecialty = specialty[tempSpec].id;
+        }
+    }
+
+    for (let tempFacult=0; tempFacult<faculty.length; tempFacult++){
+        if (facultyForm === faculty[tempFacult].title_faculty){
+            idFaculty = faculty[tempFacult].id;
+        }
+    }
+
+    for (let tempTrain=0; tempTrain<training.length; tempTrain++){
+        if (trainingForm === training[tempTrain].type_training){
+            idTraining = training[tempTrain].id;
+        }
+    }
+
+    if(!req.body) return res.sendStatus(400);
+    let sql = "INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    pool.query(sql, [idSpecialty, idFaculty, idUser, idTraining, groupForm, yearForm, diplomaForm, nameForm, lastnameForm, patronymicForm], function (err, data) {
+        if(err) return console.log(err);
+    });
+    console.log("успешная запись в бд");
+    res.redirect("/administrator");
+});
+
+app.post("/addfile", urlencodedParser, function(req, res){
 
     let filedata = req.file;
     // запись из Excel в переменную
