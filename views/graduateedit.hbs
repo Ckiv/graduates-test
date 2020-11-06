@@ -33,12 +33,13 @@
             </tbody>
         </table>
     </div>
-    <form action="/formedit?id={{this.id_grad}}" class="formedit" method="post">{{/each}}
+    <form action="/formedit?id={{this.id_grad}}" class="formedit" method="post">
         <div class="wrapper_editform">
             <div class="block_edit">
             <label class="name_field_seach">Факультет</label>
             <select name="facultyForm" class="graduate_edit_form">
-                <option disabled selected>Выбрать факультет</option>
+                <option disabled>Выберите факультет</option>
+                <option>{{this.title_faculty}}</option>
                 <option>Вечерний факультет</option>
                 <option>Геодезический факультет</option>
                 <option>Гуманитарный факультет</option>
@@ -66,12 +67,13 @@
                 <option>Юридический факультет</option>
             </select>
                 <label class="name_field_seach">Группа</label>
-                <input type="text" name="groupForm" class="graduate_edit_form">
+                <input type="text" name="groupForm" class="graduate_edit_form" value={{this.groupp}}>
             </div>
             <div class="block_edit">
             <label class="name_field_seach">Специальность</label>
             <select name="specialtyForm" class="graduate_edit_form">
-                <option disabled selected>Выбрать специальность</option>
+                <option disabled>Выберите факультет специальность</option>
+                <option>{{this.title_specialty}}</option>
                 <option>Автомобильные дороги</option>
                 <option>Автосервис</option>
                 <option>Английский язык. Немецкий язык</option>
@@ -120,13 +122,14 @@
                 <option>Экспертиза и управление недвижимостью</option>
                 <option>Электроснабжение</option>
             </select>
-                <label class="graduate_edit_label">Год выпуска</label>
-                <input type="number" min="2011" max="2018" name="yearForm" class="graduate_edit_form">
+                <label class="name_field_seach">Год выпуска</label>
+                <input type="number" min="2011" max="2018" name="yearForm" class="graduate_edit_form" value={{this.year}}>
             </div>
             <div class="block_edit">
                 <label class="name_field_seach">Форма обучения</label>
                 <select name="trainingForm" class="graduate_edit_form">
-                    <option disabled selected>Выбрать форму обучения</option>
+                    <option disabled>Выберите форму обучения</option>
+                    <option>{{this.type_training}}</option>
                     <option>дневная</option>
                     <option>дневная сокращенная</option>
                     <option>заочная</option>
@@ -138,5 +141,6 @@
         </div>
         <p><input type="submit" value="Сохранить"></p>
     </form>
+            {{/each}}
         <a href="administrator">admin page</a>
 </div>

@@ -59,7 +59,7 @@ app.use(
         cookie: {
             path: "/",
             httpOnly: true, // path - куда сохранять куки, httpOnly: true - передача данных только по https/http,maxAge - время жизни куки в миллисекундах 60 * 60 * 1000 = 1 час
-            maxAge: 60 * 60 * 1000
+            maxAge: 60 * 60 * 5000
         },
         resave: false,
         saveUninitialized: false
@@ -159,26 +159,29 @@ app.get("/profile", auth, function(req, res){
 //роутинг редактирование профиля
 app.get("/profileedit", auth, function(req, res){
     let idGrad = idsess.idsession;
+    let sqlgallery = "SELECT * FROM photos where id_graduate=?";
     let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.id_grad=?";
     pool.query(sql, [idGrad], function(err, data) {
         if(err) return console.log(err);
         if (data[0].avatarphoto===null){
             data[0].avatarphoto="nophoto.png";
         }
-        res.render("profileedit.hbs", {
-            graduate: data
+        pool.query(sqlgallery, [idGrad], function(err, datagallery) {
+            if(err) return console.log(err);
+            res.render("profileedit.hbs", {
+                graduate: data,
+                gallery: datagallery
+            });
         });
     });
 
+
 });
 //app.use(multer({storage:storageConfig}).array("filedata",3));
-app.post("/profileedit", urlencodedParser, upload.single('filedata'), function(req, res){
-    let filedata = req.file;
-    console.log(filedata.length);
-
+app.post("/profileedit", urlencodedParser, function(req, res){
     if(!req.body) return res.sendStatus(400);
-        let sql = "UPDATE graduate SET career=?, review=?, number=?, email=?, avatarphoto=? where graduate.id_grad=?";
-        pool.query(sql, [req.body.career, req.body.review, req.body.number, req.body.email, filedata.filename, idsess.idsession], function (err, data) {
+        let sql = "UPDATE graduate SET career=?, review=?, number=?, email=? where graduate.id_grad=?";
+        pool.query(sql, [req.body.career, req.body.review, req.body.number, req.body.email, idsess.idsession], function (err, data) {
             if(err) return console.log(err);
             res.redirect("/profileedit");
             console.log("успешная запись в бд");
@@ -186,7 +189,22 @@ app.post("/profileedit", urlencodedParser, upload.single('filedata'), function(r
 
     //res.render("profileedit.hbs");
 });
+//загрузка аватарки
+app.post("/avatorphoto", urlencodedParser, upload.single('filedata'), function(req, res){
+    let filedata = req.file;
+    //console.log(filedata.length);
 
+    if(!req.body) return res.sendStatus(400);
+        let sql = "UPDATE graduate SET avatarphoto=? where graduate.id_grad=?";
+        pool.query(sql, [filedata.filename, idsess.idsession], function (err, data) {
+            if(err) return console.log(err);
+            res.redirect("/profileedit");
+            console.log("успешная запись в бд");
+        });
+
+    //res.render("profileedit.hbs");
+});
+//загрузка в галлерею
 app.post("/gallery", urlencodedParser, upload.array('filedata', 5), function(req, res){
     let filedata = req.files;
     let i=0;
@@ -200,6 +218,20 @@ app.post("/gallery", urlencodedParser, upload.array('filedata', 5), function(req
         i++;
     }
     res.redirect("/profileedit");
+});
+// удаление фото
+app.post("/deletephoto",  function (req, res) {
+    const fs = require("fs");
+    let photoName = req.query.photo_name;
+    fs.unlink("public/picture/photoGraduate/"+ photoName, (err) => {
+        if (err) console.log(err); // если возникла ошибка
+        else console.log("file was deleted");
+    });
+    pool.query("DELETE FROM photos WHERE photo_name=?", [photoName], function(err, data) {
+        if(err) return console.log(err);
+        res.redirect("/profileedit");
+    });
+    //res.redirect("/profileedit");
 });
 
 //роутинг страница администратора
@@ -511,7 +543,7 @@ app.post("/formedit", urlencodedParser, function (req, res) {
             idTraining = training[tempTrain].id;
         }
     }
-
+        console.log(trainingForm);
     pool.query("UPDATE graduate SET id_faculty=?, id_specialty=?, id_training=?, groupp=?, year=?  WHERE id_grad=?", [idFaculty, idSpecialty, idTraining, groupForm, yearForm, idGrad ], function(err, data) {
         if(err) return console.log(err);
         console.log("update done");
@@ -653,7 +685,23 @@ app.get("/", function(req, res){
 // поиск выпускников по фио
 app.post("/fioseach", urlencodedParser, function(req, res){
     if (!req.body) return res.sendStatus(400);
-        if (req.body.fild_lastname_seach!=='' && req.body.fild_name_seach===''){
+    let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and (graduate.lastname=? or graduate.name=?)";
+    pool.query(sql, [req.body.fild_lastname_seach, req.body.fild_name_seach], function(err, data) {
+        if(err) return console.log(err);
+        let datalenght=0;
+        while (datalenght<data.length){
+            if (data[datalenght].avatarphoto===null){
+                data[datalenght].avatarphoto="nophoto.png";
+
+            }
+            datalenght++;
+        }
+        res.render("index.hbs", {
+            graduate: data
+        });
+    });
+
+        /*if (req.body.fild_lastname_seach!=='' && req.body.fild_name_seach===''){
             let sql = "SELECT * FROM graduate, faculty, specialty, training  where graduate.id_faculty=faculty.id and graduate.id_specialty=specialty.id and graduate.id_training=training.id and graduate.lastname=?";
             pool.query(sql, [req.body.fild_lastname_seach], function(err, data) {
                 if(err) return console.log(err);
@@ -705,7 +753,7 @@ app.post("/fioseach", urlencodedParser, function(req, res){
                     graduate: data
                 });
             });
-        }
+        }*/
     //res.render("index.hbs");
 });
 //поиск выпускников по форме

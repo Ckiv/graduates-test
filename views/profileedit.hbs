@@ -37,21 +37,49 @@
     </div>
 </div>
 <div class="content_main_profileedit_page">
-        <form action="/profileedit" method="post" enctype="multipart/form-data">
+        <form action="/profileedit" method="post">
+            {{#each graduate}}
             <div class="profileedit_inf">
                 <p class="profile_data_zaglavie">Обновить информацию</p>
-                <input type="text" class="profileedit_data" name="number" placeholder="Номер телефона">
-                <input type="text" class="profileedit_data" name="email" placeholder="E-mail">
-                <textarea type="text" class="profileedit_data" name="career" cols="40" rows="3" placeholder="Карьера"></textarea>
-                <textarea  type="text" class="profileedit_data" name="review" cols="40" rows="3" placeholder="Отзыв"></textarea>
+                <input type="text" class="profileedit_data" name="number" placeholder="Номер телефона" value={{this.number}}>
+                <input type="text" class="profileedit_data" name="email" placeholder="E-mail" value={{this.email}} >
+                <textarea type="text" class="profileedit_data" name="career" cols="40" rows="3" placeholder="Карьера">{{this.career}}</textarea>
+                <textarea  type="text" class="profileedit_data" name="review" cols="40" rows="3" placeholder="Отзыв">{{this.review}}</textarea>
+                <input type="submit" value="записать">
+            </div>
+            {{/each}}
+        </form>
+        <p class="profile_data_zaglavie">Загрузить аватар</p>
+        <form action="/avatorphoto" method="post" enctype="multipart/form-data">
+            <div class="profileedit_inf">
                 <input type="file" name="filedata" class="profileedit_data">
                 <input type="submit" value="записать">
             </div>
         </form>
-    <form action="/gallery" method="post" enctype="multipart/form-data">
-        <div class="profileedit_inf">
-            <input type="file" name="filedata" class="profileedit_data" multiple>
-            <input type="submit" value="записать">
-        </div>
-    </form>
+        <p class="profile_data_zaglavie">Загрузить фото</p>
+        <form action="/gallery" method="post" enctype="multipart/form-data">
+            <div class="profileedit_inf">
+                <input type="file" name="filedata" class="profileedit_data" multiple>
+                <input type="submit" value="записать">
+            </div>
+        </form>
+    <p class="profile_data_zaglavie">Галлерея</p>
 </div>
+
+    <div class="gallery">
+        {{#each gallery}}
+        <form action="deletephoto?photo_name={{this.photo_name}}" method="POST">
+            <div>
+                <input type="submit" value="удалить">
+                <a href="#" class="prefix-open"><label for="{{this.photo_name}}"><img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery" class="photo_gallery"></label></a>
+                <div id="Modal" class="prefix-Dialog">
+                    <div>
+                        <img src="/picture/photoGraduate/{{this.photo_name}}" alt="photo gallery" class="#">
+                        <a class="prefix-close" title="Закрыть" href="#close"></a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        {{/each}}
+    </div>
+

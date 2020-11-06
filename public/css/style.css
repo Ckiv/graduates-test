@@ -339,13 +339,15 @@ footer{
 .content_main_profileedit_page{
     margin: 0 auto;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    width: 700px;
+
 }
 .profileedit_inf{
     display: flex;
     flex-direction: column;
-    width: 700px;
-
+    margin-bottom: 40px;
 }
 .profileedit_data{
     margin-bottom: 10px;
@@ -474,7 +476,8 @@ th{
     overflow-y: auto; height: 521px;
 }
 .tableFixHead th{
-    position: sticky; top: 0;
+    position: sticky;
+    top: 0;
 }
 /*Страница администрирования конец*/
 
@@ -516,5 +519,19 @@ th{
     width: 300px;
     margin-bottom: 40px;
     margin-right: 20px;
+}
+input:invalid {
+    border: 1px dashed red;
+}
+
+input:valid {
+    border: 1px solid black;
+}
+select:invalid {
+    border: 1px dashed red;
+}
+
+select:valid {
+    border: 1px solid black;
 }
 /* конец */

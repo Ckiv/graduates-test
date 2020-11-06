@@ -3,10 +3,10 @@
     <div class="wrapper_addform">
         <div class="block_edit">
             <label class="name_field_seach">Фамилия</label>
-            <input type="text" name="lastnameForm" class="graduate_add_form">
+            <input type="text" name="lastnameForm" class="graduate_add_form" required>
             <label class="name_field_seach">Факультет</label>
-            <select name="facultyForm" class="graduate_add_form">
-                <option disabled selected>Выбрать факультет</option>
+            <select name="facultyForm" class="graduate_add_form" required>
+                <option disabled selected value="">Выбрать факультет</option>
                 <option>Вечерний факультет</option>
                 <option>Геодезический факультет</option>
                 <option>Гуманитарный факультет</option>
@@ -34,14 +34,14 @@
                 <option>Юридический факультет</option>
             </select>
             <label class="name_field_seach">Группа</label>
-            <input type="text" name="groupForm" class="graduate_add_form">
+            <input type="text" name="groupForm" class="graduate_add_form" required>
         </div>
         <div class="block_edit">
             <label class="name_field_seach">Имя</label>
-            <input type="text" name="nameForm" class="graduate_add_form">
+            <input type="text" name="nameForm" class="graduate_add_form" required>
             <label class="name_field_seach">Специальность</label>
-            <select name="specialtyForm" class="graduate_add_form">
-                <option disabled selected>Выбрать специальность</option>
+            <select name="specialtyForm" class="graduate_add_form" required>
+                <option disabled selected value="">Выбрать специальность</option>
                 <option>Автомобильные дороги</option>
                 <option>Автосервис</option>
                 <option>Английский язык. Немецкий язык</option>
@@ -91,14 +91,14 @@
                 <option>Электроснабжение</option>
             </select>
             <label class="name_field_seach">Год выпуска</label>
-            <input type="number" min="2011" max="2018" name="yearForm" class="graduate_add_form">
+            <input type="number" min="2011" max="2018" name="yearForm" class="graduate_add_form" required>
         </div>
         <div class="block_edit">
             <label class="name_field_seach">Отчество</label>
-            <input type="text" name="patronymicForm" class="graduate_add_form">
+            <input type="text" name="patronymicForm" class="graduate_add_form" required>
             <label class="name_field_seach">Форма обучения</label>
-            <select name="trainingForm" class="graduate_add_form">
-                <option disabled selected>Выбрать форму обучения</option>
+            <select name="trainingForm" class="graduate_add_form" required>
+                <option disabled selected value="">Выбрать форму обучения</option>
                 <option>дневная</option>
                 <option>дневная сокращенная</option>
                 <option>заочная</option>
@@ -107,7 +107,7 @@
                 <option>вечерняя</option>
             </select>
             <label class="name_field_seach">Номер диплома</label>
-            <input type="text" name="diplomaForm" class="graduate_add_form">
+            <input type="text" name="diplomaForm" class="graduate_add_form" required>
         </div>
     </div>
     <p><input type="submit" value="Добавить"></p>
