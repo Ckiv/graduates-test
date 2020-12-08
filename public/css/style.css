@@ -498,6 +498,7 @@ th{
 .block_edit{
     display: flex;
     flex-direction: column;
+    width: 300px;
 }
 #table_edit_page{
     height: 100px;

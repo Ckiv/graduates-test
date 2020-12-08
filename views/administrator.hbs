@@ -111,6 +111,7 @@
             <input type="submit" value="Найти">
         </form>
     </div>
+    <a href="graduateadd">Добавить нового выпускника</a>
     <div class="tableFixHead">
         <table class="table_graduate">
             <thead>
@@ -143,10 +144,10 @@
                         <td>{{this.type_training}}</td>
                         <td>{{this.diploma}}</td>
                         <td><form action="delete?id={{this.id_grad}}" method="POST" style="display:inline;">
-                                <input type="submit" value="Delete" />
+                                <input type="submit" value="Удалить" />
                             </form>
                         </td>
-                        <td><a href="graduateedit?id={{this.id_grad}}">Edit</a>|</td>
+                        <td><a href="graduateedit?id={{this.id_grad}}">Редактировать</a> </td>
 
                     </tr>
             {{/each}}
@@ -154,5 +155,5 @@
         </table>
     </div>
 
-    <a href="graduateadd">Add</a>
+
 </div>
