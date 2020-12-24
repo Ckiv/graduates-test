@@ -235,14 +235,15 @@ app.post("/deletephoto",  function (req, res) {
 });
 
 //роутинг страница администратора
-app.get("/administrator", auth, function(req, res){
-    let idGrad = idsess.idsession;
+app.get("/administrator", function(req, res){
+    /*let idGrad = idsess.idsession;
     if (idGrad === 5843) {
         res.render("administrator.hbs");
     }
     else {
         return res.redirect('/erroraccess');
-    }
+    }*/
+    res.render("administrator.hbs");
 });
 
 //страница администратора поиск
@@ -553,13 +554,14 @@ app.post("/formedit", urlencodedParser, function (req, res) {
 });
 
 app.get("/graduateadd", function(req, res){
-    let idGrad = idsess.idsession;
+    /*let idGrad = idsess.idsession;
     if (idGrad === 5843) {
         res.render("graduateadd.hbs");
     }
     else {
         return res.redirect('/erroraccess');
-    }
+    }*/
+    res.render("graduateadd.hbs");
 });
 
 app.post("/formadd", urlencodedParser, function (req, res){
@@ -611,7 +613,7 @@ app.post("/formadd", urlencodedParser, function (req, res){
     res.redirect("/administrator");
 });
 
-app.post("/addfile", urlencodedParser, function(req, res){
+app.post("/addfile", urlencodedParser, upload.single('filedata'), function(req, res){
 
     let filedata = req.file;
     // запись из Excel в переменную
@@ -628,52 +630,81 @@ app.post("/addfile", urlencodedParser, function(req, res){
 
     let idSpecialty;
     let idFaculty;
-    let idUser=2;
+    let idUser;
     let idTraining;
 
-        for (let i=0; i<=5838; i++){
-            //написать условия для определения id для записи
-            for (let tempSpec=0; tempSpec<specialty.length; tempSpec++){
-                if (data[i].specialty === specialty[tempSpec].title_specialty){
-                    idSpecialty = specialty[tempSpec].id;
+    /*for (let i=0; i<=5180; i++){
+        let sqluser = "INSERT INTO users (diploma_seria, diploma_number) VALUES (?, ?)";
+        pool.query(sqluser, [data[i].diplomaseria, data[i].diplomanumber], function (err, data) {
+            if(err) return console.log(err);
+
+
+        });
+    }
+    */
+            for (let i=0; i<=100; i++){
+                //написать условия для определения id для записи
+                for (let tempSpec=0; tempSpec<specialty.length; tempSpec++){
+                    if (data[i].specialty === specialty[tempSpec].title_specialty){
+                        idSpecialty = specialty[tempSpec].id;
+                    }
                 }
+
+                for (let tempFacult=0; tempFacult<faculty.length; tempFacult++){
+                    if (data[i].faculty === faculty[tempFacult].title_faculty){
+                        idFaculty = faculty[tempFacult].id;
+                    }
+                }
+
+                for (let tempTrain=0; tempTrain<training.length; tempTrain++){
+                    if (data[i].training === training[tempTrain].type_training){
+                        idTraining = training[tempTrain].id;
+                    }
+                }
+
+
+                if(!req.body) return res.sendStatus(400);
+
+
+                let sqlusers = "SELECT * FROM users";
+
+                pool.query(sqlusers,  function(err, datausers) {
+                    if(err) return console.log(err);
+                    for (let j=0; j<=100; j++){
+                    if (data[i].diplomanumber===datausers[j].diploma_number){
+                        idUser=datausers[j].id;
+                    }
+                    }
+                    let sql = "INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    pool.query(sql, [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].name, data[i].lastname, data[i].patronymic], function (err, data) {
+                        if(err) return console.log(err);
+                        console.log("запись выпускника номер: ", i);
+
+                    });
+                });
+
+
+
+
+                idSpecialty=0;
+                idFaculty=0;
+                idTraining=0;
+                idUser=0;
+
             }
 
-            for (let tempFacult=0; tempFacult<faculty.length; tempFacult++){
-                if (data[i].faculty === faculty[tempFacult].title_faculty){
-                    idFaculty = faculty[tempFacult].id;
-                }
-            }
-
-            for (let tempTrain=0; tempTrain<training.length; tempTrain++){
-                if (data[i].training === training[tempTrain].type_training){
-                    idTraining = training[tempTrain].id;
-                }
-            }
-
-            /*pool.query("INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].diploma, data[i].name, data[i].lastname, data[i].patronymic],  function(err, data) {
-                if(err) return console.log(err);
-                res.redirect("/administrator");
-                console.log("успешная запись в бд");
-            });
-            */
-            if(!req.body) return res.sendStatus(400);
-            let sql = "INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, diploma, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            pool.query(sql, [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].diploma, data[i].name, data[i].lastname, data[i].patronymic], function (err, data) {
-                if(err) return console.log(err);
-                console.log("запись выпускника номер: ", i);
-
-            });
-
-            idSpecialty=0;
-            idFaculty=0;
-            idTraining=0;
-
-        }
     console.log("успешная запись в бд");
     res.redirect("/administrator");
 });
+/*let sqluser = "INSERT INTO users (diploma_seria, diploma_number) VALUES (?, ?)";
+            pool.query(sqluser, [data[i].diplomaseria, data[i].diplomanumber], function (err, data) {
+                if(err) return console.log(err);
+            });
 
+            let sql = "INSERT INTO graduate (id_specialty, id_faculty, id_user, id_training, groupp, year, name, lastname, patronymic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            pool.query(sql, [idSpecialty, idFaculty, idUser, idTraining, data[i].group, data[i].year, data[i].name, data[i].lastname, data[i].patronymic], function (err, data) {
+                    if(err) return console.log(err);
+            });*/
 
 //роутинг стартовая страница
 app.get("/", function(req, res){
